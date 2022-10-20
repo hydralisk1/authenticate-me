@@ -35,6 +35,55 @@
     }
     ```
 
+### Sign In
+* Require Authentication: false
+* Request
+  * Method: POST
+  * URL: /api/users/:userId/signIn
+  * Headers:
+    * Content-Type: application/json
+  * Body:
+  ```json
+  {
+    "email": "user email",
+    "password": "user password",
+  }
+  ```
+
+* Successful Response
+  * Status Code: 200
+  * Headers:
+    * Content-Type: application/json
+  * Body:
+    ```json
+    {
+      "message": "Successfully signed in",
+      "statusCode": 200,
+      "token": "JWT Token"
+    }
+    ```
+
+### Sign Out
+* Require Authentication: false
+* Request
+  * Method: GET
+  * URL: /api/users/:userId/signOut
+  * Headers:
+    * Content-Type: jwt token
+  * Body: none
+
+* Successful Response
+  * Status Code: 200
+  * Headers:
+    * Content-Type: application/json
+  * Body:
+    ```json
+    {
+      "message": "Successfully signed out",
+      "statusCode": 200,
+    }
+    ```
+
 ### Create a Group
 * Require Authentication: true
 * Request
