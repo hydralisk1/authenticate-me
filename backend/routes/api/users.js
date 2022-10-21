@@ -19,6 +19,12 @@ const validateSignup = [
         .not()
         .isEmail()
         .withMessage('Username cannot be an email.'),
+    check('firstName')
+        .exists({ checkFalsy: true })
+        .withMessage('Please provide your first name'),
+    check('lastName')
+        .exists({ checkFalsy: true })
+        .withMessage('Please provide your first name'),
     check('password')
         .exists({ checkFalsy: true })
         .isLength({ min: 6 })
