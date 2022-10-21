@@ -5,6 +5,12 @@ const { User } = require('../../db/models')
 
 const router = express.Router()
 
+router.get('/', restoreUser, (req, res) => {
+    const { user } = req
+
+    return user ? res.json({ user: user.toSafeObject() }) : res.json({})
+})
+
 router.post('/', async (req, res, next) => {
     const { credential, password } = req.body
     const user = await User.login({ credential, password })
