@@ -26,6 +26,11 @@ module.exports = (sequelize, DataTypes) => {
         models.Group,
         { foreignKey: 'organizerId', onDelete: 'CASCADE', hooks: true }
       )
+
+      User.belongsToMany(
+        models.Group,
+        { through: models.Membership }
+      )
     }
 
     static getCurrentUserById(id) {
