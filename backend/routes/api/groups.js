@@ -30,4 +30,20 @@ router.get('/', async (_req, res) => {
     return res.json({ Groups: groups })
 })
 
+router.get('/:groupId', async (req, res, next) => {
+    const { groupId } = req.params
+
+    const group = await Group.findByPk(groupId)
+
+    if(!group){
+        const err = new Error()
+        err.message = 'Group couldn\'t be found'
+        err.status = 404
+
+        next(err)
+    }
+
+    return res.json({ group })
+})
+
 module.exports = router
