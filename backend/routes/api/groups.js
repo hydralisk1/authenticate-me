@@ -1,5 +1,5 @@
 const express = require('express')
-const { Group, GroupImage, User, sequelize } = require('../../db/models')
+const { Group, GroupImage, User, sequelize, Venue } = require('../../db/models')
 
 const router = express.Router()
 
@@ -33,7 +33,19 @@ router.get('/', async (_req, res) => {
 router.get('/:groupId', async (req, res, next) => {
     const { groupId } = req.params
 
-    const group = await Group.findByPk(groupId)
+    const group = await Group.findByPk(groupId, {
+        include: [{
+            model: GroupImage,
+            attributes: ['id', 'url', 'preview']
+        },{
+            model: User,
+            as: 'Organizer',
+            attributes: ['id', 'firstName', 'lastName']
+        },{
+            model: Venue,
+            attributes: ['id', 'groupId', 'address', 'city', 'state', 'lat', 'lng']
+        }],
+    })
 
     if(!group){
         const err = new Error()
@@ -43,7 +55,12 @@ router.get('/:groupId', async (req, res, next) => {
         next(err)
     }
 
-    return res.json({ group })
+    const numMembers = await group.countMembers()
+
+    const data = await group.toJSON()
+    data.numMembers = numMembers
+
+    return res.json(data)
 })
 
 module.exports = router
