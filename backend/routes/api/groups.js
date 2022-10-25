@@ -4,7 +4,9 @@ const { Group } = require('../../db/models')
 const router = express.Router()
 
 router.get('/', async (req, res) => {
-    const groups = await Group.findAll()
+    const groups = await Group.findAll({
+        includes: []
+    })
 
     return res.json({ groups })
 })
