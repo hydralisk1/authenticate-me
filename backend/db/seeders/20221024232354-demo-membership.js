@@ -31,11 +31,6 @@ module.exports = {
       userId: userIds[0].id,
       groupId: groupIds[1].id,
       status: 'co-host'
-    },
-    {
-      userId: userIds[2].id,
-      groupId: groupIds[1].id,
-      status: 'pending'
     }], {});
   },
 
