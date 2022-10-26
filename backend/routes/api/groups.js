@@ -2,8 +2,32 @@ const express = require('express')
 const { Group, GroupImage, User, Venue, Membership, sequelize } = require('../../db/models')
 const { Op } = require('sequelize')
 const { requireAuth } = require('../../utils/auth')
+const { check } = require('express-validator')
+const { handleValidationErrors } = require('../../utils/validation')
 
 const router = express.Router()
+
+const validateCreateGroup = [
+    check('name')
+        .exists({ checkFalsy: true })
+        .isLength({ max: 60, min: 1})
+        .withMessage('Name must be 60 characters or less'),
+    check('about')
+        .exists({ checkFalsy: true })
+        .isLength({ min: 50 })
+        .withMessage('About must be 50 characters or more'),
+    check('type')
+        .exists({ checkFalsy: true })
+        .custom(value => ['Online', 'In person'].includes(value))
+        .withMessage('Type must be a boolean'),
+    check('city')
+        .exists({ checkFalsy: true})
+        .withMessage('City is required'),
+    check('state')
+        .exists({ checkFalsy: true})
+        .withMessage('State is required'),
+    handleValidationErrors
+]
 
 router.get('/current', requireAuth, async (req, res, next) => {
     const userId = req.user.id
@@ -22,7 +46,7 @@ router.get('/current', requireAuth, async (req, res, next) => {
             model: GroupImage,
             attributes: [],
             where: { preview: true },
-            required: false,
+            required: false, // LEFT OUTER JOIN
         }],
         attributes: {
             include: [
@@ -101,6 +125,28 @@ router.get('/', async (_req, res) => {
     })
 
     return res.json({ Groups: groups })
+})
+
+router.post('/', requireAuth, validateCreateGroup, async (req, res, next) => {
+    const organizerId = req.user.id
+    const { name, about, type, private, city, state } = req.body
+
+    try{
+        const newGroup = await Group.create({
+            organizerId,
+            name,
+            about,
+            type,
+            private,
+            city,
+            state,
+        })
+
+        return res.json(newGroup)
+    }catch(err){
+        err.status = 400
+        next(err)
+    }
 })
 
 module.exports = router
