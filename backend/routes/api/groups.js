@@ -100,6 +100,55 @@ router.get('/:groupId', async (req, res, next) => {
     return res.json(data)
 })
 
+router.delete('/:groupId', requireAuth, async (req, res, next) => {
+    const { groupId } = req.params
+
+    const group = await Group.findByPk(groupId)
+
+    if(!group || group.organizerId !== req.user.id){
+        const err = new Error()
+        err.status = 404
+        err.message = 'Group couldn\'t be found'
+
+        next(err)
+    }
+
+    await group.destroy()
+
+    return res.json({
+        message: 'Successfully deleted',
+        statusCode: 200
+    })
+})
+
+router.put('/:groupId', requireAuth, validateCreateGroup, async (req, res, next) => {
+    const { groupId } = req.params
+
+    const group = await Group.findByPk(groupId)
+
+    if(!group || req.user.id !== group.organizerId){
+        const err = new Error()
+        err.status = 404
+        err.message = 'Group couldn\'t be found'
+
+        next(err)
+    }
+
+    const { name, about, type, private, city, state } = req.body
+    group.set({
+        name,
+        about,
+        type,
+        private,
+        city,
+        state
+    })
+
+    await group.save()
+
+    return res.json(group)
+})
+
 router.get('/', async (_req, res) => {
     const groups = await Group.findAll({
         include: [{
@@ -142,7 +191,7 @@ router.post('/', requireAuth, validateCreateGroup, async (req, res, next) => {
             state,
         })
 
-        return res.json(newGroup)
+        return res.status(201).json(newGroup)
     }catch(err){
         err.status = 400
         next(err)
