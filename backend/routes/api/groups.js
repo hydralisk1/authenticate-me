@@ -62,8 +62,14 @@ const validateAddVenue = [
     handleValidationErrors
 ]
 
-router.get('/:groupId/members', async (req, res) => {
+router.get('/:groupId/members', async (req, res, next) => {
     const { groupId } = req.params
+    const where = {}
+    const member = await Group.findByPk(groupId)
+
+    if(!req.user || req.user.id !== member.organizerId){
+        where.status = { [Op.in]: ['co-host', 'member']}
+    }
 
     const members = await Group.findByPk(groupId, {
         include: [{
@@ -71,11 +77,19 @@ router.get('/:groupId/members', async (req, res) => {
             as: 'Members',
             attributes: ['id', 'firstName', 'lastName'],
             through: {
-                attributes: ['status']
-            }
+                attributes: ['status'],
+                where
+            },
         }],
         attributes: []
     })
+
+    if(!members) {
+        const err = new Error('Group couldn\'t be found')
+        err.status = 404
+
+        return next(err)
+    }
 
     return res.json(members)
 })
