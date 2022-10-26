@@ -1,6 +1,7 @@
 const jwt = require('jsonwebtoken')
 const { jwtConfig } = require('../config')
-const { User } = require('../db/models')
+const { Op } = require('sequelize')
+const { User, Group, Membership } = require('../db/models')
 
 const { secret, expiresIn } = jwtConfig
 
@@ -54,8 +55,46 @@ const requireAuth = (req, _res, next) => {
     return next(err)
 }
 
+const requireGroupAuth = async (req, _res, next) => {
+    const { groupId } = req.params
+    const userId = req.user.id
+    const group = await Group.findByPk(groupId)
+
+    if(!group) {
+        const err = new Error('Group couldn\'n t be found')
+        err.title = 'Group couldn\'n t be found'
+        err.errors = ['Group couldn\'n t be found']
+        err.status = 404
+        return next(err)
+    }
+
+    if(group.organizerId === userId) return next()
+
+    const membership = await Membership.findOne({
+        where: {
+            [Op.and]: [
+                { groupId },
+                {[Op.and]: [
+                    { userId },
+                    { status: 'co-host'}
+                ]}
+            ]
+        }
+    })
+
+    if(membership) return next()
+
+    const err = new Error('Unauthorized')
+    err.title = 'Unauthorized'
+    err.errors = ['Unauthorized']
+    err.status = 401
+
+    return next(err)
+}
+
 module.exports = {
     setTokenCookie,
     restoreUser,
-    requireAuth
+    requireAuth,
+    requireGroupAuth
 }

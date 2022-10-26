@@ -1,7 +1,7 @@
 const express = require('express')
 const { Group, GroupImage, User, Venue, Membership, sequelize } = require('../../db/models')
 const { Op } = require('sequelize')
-const { requireAuth } = require('../../utils/auth')
+const { requireAuth, requireGroupAuth } = require('../../utils/auth')
 const { check } = require('express-validator')
 const { handleValidationErrors } = require('../../utils/validation')
 
@@ -28,6 +28,52 @@ const validateCreateGroup = [
         .withMessage('State is required'),
     handleValidationErrors
 ]
+
+const validateAddImage = [
+    check('url')
+        .exists({ checkFalsy: true })
+        .isURL()
+        .withMessage('url should be url type'),
+    check('preview')
+        .exists({ checkFalsy: true })
+        .isBoolean()
+        .withMessage('Preview should be a boolean value'),
+    handleValidationErrors
+]
+
+router.post('/:groupId/images', requireAuth, validateAddImage, async (req, res, next) => {
+    const { groupId } = req.params
+    const group = await Group.findByPk(groupId)
+
+    if(!group || group.organizerId !== req.user.id){
+        const err = new Error()
+        err.status = 404
+        err.message = 'Group couldn\'t be found'
+
+        next(err)
+    }
+
+    const { url, preview } = req.body
+
+    const groupImage = await GroupImage.create({
+        groupId,
+        url,
+        preview
+    })
+
+    return res.json({
+        id: groupImage.id,
+        url: groupImage.url,
+        preview: groupImage.preview
+    })
+})
+
+router.get('/:groupId/venues', requireAuth, requireGroupAuth, async (req, res, next) => {
+    const { groupId } = req.params
+    const venues = await Venue.findAll({ where: { groupId } })
+
+    return res.json({ Venues: venues })
+})
 
 router.get('/current', requireAuth, async (req, res, next) => {
     const userId = req.user.id
