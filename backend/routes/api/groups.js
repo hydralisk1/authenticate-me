@@ -62,6 +62,24 @@ const validateAddVenue = [
     handleValidationErrors
 ]
 
+router.get('/:groupId/members', async (req, res) => {
+    const { groupId } = req.params
+
+    const members = await Group.findByPk(groupId, {
+        include: [{
+            model: User,
+            as: 'Members',
+            attributes: ['id', 'firstName', 'lastName'],
+            through: {
+                attributes: ['status']
+            }
+        }],
+        attributes: []
+    })
+
+    return res.json(members)
+})
+
 router.post('/:groupId/images', requireAuth, validateAddImage, async (req, res, next) => {
     const { groupId } = req.params
     const group = await Group.findByPk(groupId)
