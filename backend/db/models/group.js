@@ -2,6 +2,7 @@
 const {
   Model, Sequelize
 } = require('sequelize');
+const { User } = require('../models')
 module.exports = (sequelize, DataTypes) => {
   class Group extends Model {
     /**
@@ -24,6 +25,16 @@ module.exports = (sequelize, DataTypes) => {
         models.Venue,
         { foreignKey: 'groupId', onDelete: 'CASCADE', hooks: true}
       )
+      Group.hasMany(
+        models.Membership,
+        { foreignKey: 'groupId', onDelete: 'CASCADE', hooks: true}
+      )
+    }
+
+    static async getNumMembersById(id){
+      const group = await Group.findByPk(id)
+
+      return group.countMembers()
     }
   }
   Group.init({

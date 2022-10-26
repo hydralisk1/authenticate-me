@@ -1,30 +1,43 @@
 const express = require('express')
-const { Group, GroupImage, User, sequelize, Venue } = require('../../db/models')
+const { Group, GroupImage, User, Venue, Membership, sequelize } = require('../../db/models')
+const { Op } = require('sequelize')
+const { requireAuth } = require('../../utils/auth')
 
 const router = express.Router()
 
-router.get('/', async (_req, res) => {
+router.get('/current', requireAuth, async (req, res, next) => {
+    const userId = req.user.id
+    const gIds = await Membership.findAll({
+        attributes: ['groupId'],
+        where: { userId }
+    })
+
+    const groupIds = gIds.map(g => g.groupId)
+
     const groups = await Group.findAll({
         include: [{
-            model: User,
-            as: 'Members',
-            attributes: []
+            model: Membership,
+            attributes: [],
         },{
             model: GroupImage,
             attributes: [],
+            where: { preview: true },
             required: false,
-            where: {
-                preview: true
-            }
         }],
         attributes: {
             include: [
-                [sequelize.fn('COUNT', sequelize.col('Members.id')), 'numMembers'],
+                [sequelize.fn('COUNT', sequelize.col('Memberships.userId')), 'numMembers'],
                 [sequelize.col('GroupImages.url'), 'previewImage']
             ]
         },
-        group: ['Group.id'],
-        order: [['id']]
+        where: {
+            [Op.or]: [{
+                '$Memberships.groupId$': { [Op.in]: groupIds}
+            },{
+                organizerId: userId
+            }]
+        },
+        group: ['Group.id']
     })
 
     return res.json({ Groups: groups })
@@ -52,7 +65,7 @@ router.get('/:groupId', async (req, res, next) => {
         err.message = 'Group couldn\'t be found'
         err.status = 404
 
-        next(err)
+        return next(err)
     }
 
     const numMembers = await group.countMembers()
@@ -61,6 +74,33 @@ router.get('/:groupId', async (req, res, next) => {
     data.numMembers = numMembers
 
     return res.json(data)
+})
+
+router.get('/', async (_req, res) => {
+    const groups = await Group.findAll({
+        include: [{
+            model: User,
+            as: 'Members',
+            attributes: []
+        },{
+            model: GroupImage,
+            attributes: [],
+            required: false,
+            where: {
+                preview: true
+            }
+        }],
+        attributes: {
+            include: [
+                [sequelize.fn('COUNT', sequelize.col('Members.id')), 'numMembers'],
+                [sequelize.col('GroupImages.url'), 'previewImage']
+            ]
+        },
+        group: ['Group.id'],
+        order: [['id']]
+    })
+
+    return res.json({ Groups: groups })
 })
 
 module.exports = router
