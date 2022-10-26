@@ -41,6 +41,27 @@ const validateAddImage = [
     handleValidationErrors
 ]
 
+const validateAddVenue = [
+    check('address')
+        .exists({ checkFalsy: true })
+        .withMessage('Street address is required'),
+    check('city')
+        .exists({ checkFalsy: true })
+        .withMessage('City is required'),
+    check('state')
+        .exists({ checkFalsy: true })
+        .withMessage('State is required'),
+    check('lat')
+        .exists({ checkFalsy: true})
+        .isFloat()
+        .withMessage('Latitude is not valid'),
+    check('lng')
+        .exists({ checkFalsy: true})
+        .isFloat()
+        .withMessage('Longitude is not valid'),
+    handleValidationErrors
+]
+
 router.post('/:groupId/images', requireAuth, validateAddImage, async (req, res, next) => {
     const { groupId } = req.params
     const group = await Group.findByPk(groupId)
@@ -68,11 +89,34 @@ router.post('/:groupId/images', requireAuth, validateAddImage, async (req, res, 
     })
 })
 
-router.get('/:groupId/venues', requireAuth, requireGroupAuth, async (req, res, next) => {
+router.get('/:groupId/venues', requireAuth, requireGroupAuth, async (req, res) => {
     const { groupId } = req.params
     const venues = await Venue.findAll({ where: { groupId } })
 
     return res.json({ Venues: venues })
+})
+
+router.post('/:groupId/venues', requireAuth, requireGroupAuth, validateAddVenue, async (req, res) => {
+    const { groupId } = req.params
+    const { address, city, state, lat, lng } = req.body
+
+    const newVenue = await Venue.create({
+        groupId,
+        address,
+        city,
+        state,
+        lat,
+        lng
+    })
+
+    return res.status(201).json({
+        id: newVenue.id,
+        groupId: newVenue.groupId,
+        address: newVenue.address,
+        city: newVenue.city,
+        lat: newVenue.lat,
+        lng: newVenue.lng,
+    })
 })
 
 router.get('/current', requireAuth, async (req, res, next) => {
