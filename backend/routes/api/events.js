@@ -90,6 +90,13 @@ router.put('/:eventId/attendance', requireAuth, async (req, res, next) => {
     const { eventId } = req.params
     const { userId, status } = req.body
 
+    if(!userId || !status) {
+        const err = new Error('userId and status are required')
+        err.status = 400
+
+        return next(err)
+    }
+
     if(status === 'pending'){
         const err = new Error('Cannot change an attendance status to pending')
         err.status = 400

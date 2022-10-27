@@ -138,6 +138,13 @@ router.delete('/:groupId/membership', requireAuth, async (req, res, next) => {
     const { groupId } = req.params
     const { memberId } = req.body
 
+    if(!memberId) {
+        const err = new Error('memberId is required')
+        err.status = 400
+
+        return next(err)
+    }
+
     const group = await Group.findByPk(groupId)
     if(!group){
         const err = new Error('Group couldn\'t be found')
@@ -198,63 +205,78 @@ router.put('/:groupId/membership', requireAuth, async (req, res, next) => {
         return next(err)
     }
 
-    const group = await Group.findByPk(groupId)
+    const user = await User.findByPk(memberId,{
+        include: {
+            model: Group,
+            as: 'JoinedGroups',
+            through: { attributes: ['id', 'groupId', 'userId', 'status'] },
+            where: { id: groupId }
+        },
+    })
 
-    if(!group){
-        const err = new Error('Group couldn\'t be found')
+    if(!user){
+        const err = new ValidationError('Validation Error')
+        err.status = 400
+        err.errors = [{ memberId: 'User couldn\'t be found'}]
+
+        return next(err)
+    }
+
+    const users = await Group.findByPk(groupId, {
+        include: {
+            model: User,
+            as: 'Members',
+            through: {
+                attributes: ['status']
+            },
+            where: { id: { [Op.or]: [userId, memberId] }},
+            required: false
+        }
+    })
+
+    if(!users) {
+        const err = new Error('Group could\'t be found')
         err.status = 404
 
         return next(err)
     }
 
-    const user = await User.findByPk(memberId)
 
-    if(!user){
-        const err = new ValidationError('User couldn\'t be found')
-        err.status = 400
+    let currUserIdx
+    let memberIdx
 
-        return next(err)
+    for(let i = 0; i < users.Members.length; i++){
+        if(users.Members[i].id === memberId) memberIdx = i
+        else if(users.Members[i].id === userId) currUserIdx = i
     }
 
-    const member = await user.getJoinedGroups({
-        where: { id: groupId },
-        attributes: [],
-    })
-
-    if(!member.length){
+    if(memberIdx === undefined){
         const err = new Error('Membership between the user and the group does not exists')
-        err.status = 400
+        err.status = 404
 
         return next(err)
     }
 
-    let role
+    console.log(users.organizerId, userId)
 
-    if(group.organizerId === userId) role = 'organizer'
-    else {
-        const currentUser = await group.getMemberships({
-            where: { userId }
-        })
-
-        if(currentUser.length) role = currentUser[0].status
-    }
-
-    if((role !== 'organizer' && role !== 'co-host') || (status === 'co-host' && role !== 'organizer')){
+    if((users.organizerId !== userId)
+        && currUserIdx === undefined
+        && status === 'co-host'
+        && (users.Members[currUserIdx].Membership.status !== 'co-host')
+    ){
         const err = new Error('Permission denied')
         err.status = 403
 
         return next(err)
     }
 
-    await member[0].Membership.update({
-        status
-    })
+    const membership = await user.JoinedGroups[0].Membership.update({ status })
 
     return res.json({
-        id: member[0].Membership.id, // id doesn't appear
-        groupId: member[0].Membership.groupId,
-        memberId: member[0].Membership.userId,
-        status: member[0].Membership.status,
+        id: membership.id,
+        groupId: membership.groupId,
+        memberId: membership.userId,
+        status: membership.status,
     })
 })
 
@@ -307,6 +329,13 @@ router.get('/:groupId/members', async (req, res, next) => {
     const where = {}
     const member = await Group.findByPk(groupId)
 
+    if(!member) {
+        const err = new Error('Group couldn\'t be found')
+        err.status = 404
+
+        return next(err)
+    }
+
     if(!req.user || req.user.id !== member.organizerId){
         where.status = { [Op.in]: ['co-host', 'member']}
     }
@@ -318,18 +347,13 @@ router.get('/:groupId/members', async (req, res, next) => {
             attributes: ['id', 'firstName', 'lastName'],
             through: {
                 attributes: ['status'],
-                where
+                where,
+                required: false
             },
+            required: false
         }],
         attributes: []
     })
-
-    if(!members.length) {
-        const err = new Error('Group couldn\'t be found')
-        err.status = 404
-
-        return next(err)
-    }
 
     return res.json(members)
 })
