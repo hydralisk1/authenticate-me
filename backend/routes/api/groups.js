@@ -62,6 +62,58 @@ const validateAddVenue = [
     handleValidationErrors
 ]
 
+router.delete('/:groupId/membership', requireAuth, async (req, res, next) => {
+    const { groupId } = req.params
+    const { memberId } = req.body
+
+    const group = await Group.findByPk(groupId)
+    if(!group){
+        const err = new Error('Group couldn\'t be found')
+        err.status = 404
+
+        return next(err)
+    }
+
+    const user = await User.findByPk(memberId, {
+        include: {
+            model: Group,
+            as: 'JoinedGroups',
+            where: { id: groupId },
+            required: false
+        }
+    })
+
+    if(!user) {
+        const err = new ValidationError('Validation Error')
+        err.errors = { memberId: 'User couldn\'t be found'}
+        err.status = 400
+
+        return next(err)
+    }
+
+    if(!user.JoinedGroups.length) {
+        const err = new Error('Membership does not exist for this User')
+        err.status = 404
+
+        return next(err)
+    }
+
+    const joinedGroup = user.JoinedGroups[0].Membership
+
+    console.log(joinedGroup)
+
+    if(req.user.id !== group.organizerId && memberId !== req.user.id){
+        const err = new Error(`Permission denied`)
+        err.status = 403
+
+        return next(err)
+    }
+
+    joinedGroup.destroy()
+
+    return res.json({ message: 'Successfully deleted membership from group' })
+})
+
 router.put('/:groupId/membership', requireAuth, async (req, res, next) => {
     const userId = req.user.id
     const { groupId } = req.params
