@@ -29,6 +29,10 @@ module.exports = (sequelize, DataTypes) => {
         models.Membership,
         { foreignKey: 'groupId', onDelete: 'CASCADE', hooks: true}
       )
+      Group.hasMany(
+        models.Event,
+        { foreignKey: 'groupId', onDelete: 'CASCADE', hooks: true}
+      )
     }
 
     static async getNumMembersById(id){

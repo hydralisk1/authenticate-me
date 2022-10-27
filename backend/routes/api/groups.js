@@ -1,45 +1,97 @@
 const express = require('express')
-const { Group, GroupImage, User, Venue, Membership, sequelize } = require('../../db/models')
+const { Group, GroupImage, User, Venue, Membership, Event, EventImage, sequelize } = require('../../db/models')
 const { Op, ValidationError } = require('sequelize')
 const { requireAuth, requireGroupAuth } = require('../../utils/auth')
-const { check } = require('express-validator')
-const { handleValidationErrors, validateAddVenue } = require('../../utils/validation')
+const { validateAddVenue, validateCreateGroup, validateAddImage, validateAddEvent } = require('../../utils/validation')
 
 const router = express.Router()
 
-const validateCreateGroup = [
-    check('name')
-        .exists({ checkFalsy: true })
-        .isLength({ max: 60, min: 1})
-        .withMessage('Name must be 60 characters or less'),
-    check('about')
-        .exists({ checkFalsy: true })
-        .isLength({ min: 50 })
-        .withMessage('About must be 50 characters or more'),
-    check('type')
-        .exists({ checkFalsy: true })
-        .custom(value => ['Online', 'In person'].includes(value))
-        .withMessage('Type must be a boolean'),
-    check('city')
-        .exists({ checkFalsy: true})
-        .withMessage('City is required'),
-    check('state')
-        .exists({ checkFalsy: true})
-        .withMessage('State is required'),
-    handleValidationErrors
-]
+router.post('/:groupId/events', requireAuth, requireGroupAuth, validateAddEvent, async (req, res, next) => {
+    const { groupId } = req.params
+    const { venueId, name, type, capacity, price, description, startDate, endDate } = req.body
 
-const validateAddImage = [
-    check('url')
-        .exists({ checkFalsy: true })
-        .isURL()
-        .withMessage('url should be url type'),
-    check('preview')
-        .exists({ checkFalsy: true })
-        .isBoolean()
-        .withMessage('Preview should be a boolean value'),
-    handleValidationErrors
-]
+    const group = await Group.findByPk(groupId)
+
+    if(!group){
+        const err = new Error('Group couldn\'t be found')
+        err.status = 404
+
+        return next(err)
+    }
+
+    if(venueId){
+        const venue = await Venue.findByPk(venueId)
+        if(!venue){
+            const err = new Error('Venue couldn\'t be found')
+            err.status = 404
+
+            return next(err)
+        }
+    }
+
+    const newEvent = await Event.create({
+        groupId,
+        venueId,
+        name,
+        type,
+        capacity,
+        price,
+        description,
+        startDate,
+        endDate
+    })
+
+    return res.json({
+        id: newEvent.id,
+        groupId: newEvent.groupId,
+        venueId: newEvent.venueId,
+        name: newEvent.name,
+        type: newEvent.type,
+        capacity: newEvent.capacity,
+        price: newEvent.price,
+        description: newEvent.description,
+        startDate: newEvent.startDate,
+        endDate: newEvent.endDate,
+    })
+})
+
+router.get('/:groupId/events', async (req, res, next) => {
+    const { groupId } = req.params
+    const events = await Event.findAll({
+        where: { groupId },
+        include: [{
+            model: Group,
+            attributes: ['id', 'name', 'city', 'state']
+        },{
+            model: Venue,
+            attributes: ['id', 'city', 'state']
+        },{
+            model: User,
+            attributes: []
+        },{
+            model: EventImage,
+            attributes: [],
+            where: { preview: true },
+            required: false
+        }],
+        attributes: {
+            include: [
+                [sequelize.fn('COUNT', sequelize.col('Users.id')), 'numAttending'],
+                [sequelize.col('EventImages.url'), 'previewImage']
+            ]
+        },
+        group: [['Event.id']]
+    })
+
+    if(!events){
+        const err = new Error('Group couldn\'t be found')
+        err.status = 404
+
+        return next(err)
+    }
+
+    return res.json({ Events: events })
+})
 
 router.delete('/:groupId/membership', requireAuth, async (req, res, next) => {
     const { groupId } = req.params

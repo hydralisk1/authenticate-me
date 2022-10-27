@@ -1,7 +1,7 @@
 const jwt = require('jsonwebtoken')
 const { jwtConfig } = require('../config')
 const { Op } = require('sequelize')
-const { User, Group, Membership, GroupImage, Venue } = require('../db/models')
+const { User, Group, Membership, GroupImage, Venue, Event } = require('../db/models')
 
 const { secret, expiresIn } = jwtConfig
 
@@ -56,7 +56,7 @@ const requireAuth = (req, _res, next) => {
 }
 
 const requireGroupAuth = async (req, _res, next) => {
-    let { groupId, imageId, venueId } = req.params
+    let { groupId, imageId, venueId, eventId } = req.params
     const userId = req.user.id
 
     let group
@@ -73,6 +73,11 @@ const requireGroupAuth = async (req, _res, next) => {
             include: Group
         })
         if(venue) group = venue.Group
+    }else if(eventId){
+        const event = await Event.findByPk(eventId, {
+            include: Group
+        })
+        if(event) group = event.Group
     }
 
     groupId = group.id
