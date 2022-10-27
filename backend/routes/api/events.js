@@ -4,6 +4,88 @@ const { requireAuth } = require('../../utils/auth')
 const { validateAddImage, validateAddEvent } = require('../../utils/validation')
 const router = express.Router()
 
+router.get('/:eventId/attendees', async (req, res, next) => {
+    const attendees = await Event.findByPk(req.params.eventId, {
+        include: {
+            model: User,
+            attributes: ['id', 'firstName', 'lastName'],
+            through: {
+                attributes: ['status']
+            }
+        },
+        attributes: []
+    })
+
+    if(!attendees) {
+        const err = new Error('Event couldn\'t be found')
+        err.status = 404
+
+        return next(err)
+    }
+
+    return res.json({ Attendees: attendees.Users })
+})
+
+router.post('/:eventId/attendance', requireAuth, async (req, res, next) => {
+    const currentUserId = req.user.id
+    const { eventId } = req.params
+
+    const event = await Event.findByPk(eventId, {
+        include: [{
+            model: Group,
+            include: {
+                model: User,
+                as: 'Members',
+                where: { id: currentUserId },
+                required: false
+            }
+        },{
+            model: User,
+            through: {
+                attributes: ['status']
+            },
+            where: { id: currentUserId },
+            required: false,
+        }]
+    })
+
+    if(!event) {
+        const err = new Error('Event couldn\'t be found')
+        err.status = 404
+
+        return next(err)
+    }
+
+    if(!event.Group.Members.length || event.Group.Members[0].Membership.status === 'pending') {
+        const err = new Error('Permission denied')
+        err.status = 403
+
+        return next(err)
+    }
+
+    if(event.Users.length){
+        const err = new Error()
+        err.status = 400
+
+        if(event.Users[0].Attendance.status === 'pending')
+            err.message = 'Attendance has already been requested'
+        else err.message = 'User is already an attendee of the event'
+
+        return next(err)
+    }
+
+    const newAttendance = await Attendance.create({
+        eventId,
+        userId: currentUserId,
+        status: 'pending'
+    })
+
+    return res.json({
+        userId: newAttendance.userId,
+        status: newAttendance.status
+    })
+})
+
 router.put('/:eventId/attendance', requireAuth, async (req, res, next) => {
     const { eventId } = req.params
     const { userId, status } = req.body
@@ -53,7 +135,9 @@ router.put('/:eventId/attendance', requireAuth, async (req, res, next) => {
     const currentUserId = req.user.id
 
     if(currentUserId !== user.Group.organizerId
-        && !user.Group.Members.some(member => member.id === currentUserId && member.Membership.status === 'co-host')
+        && !user.Group.Members.some(member => member.id === currentUserId && member.Membership.status === 'co-host'
+        && status === 'member'
+    )
     ){
         const err = new Error('Permission denied')
         err.status = 403
