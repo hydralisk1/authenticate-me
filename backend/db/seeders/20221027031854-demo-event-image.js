@@ -17,11 +17,11 @@ module.exports = {
     return queryInterface.bulkInsert('EventImages', [{
       eventId: eventIds[0].id,
       url: 'https://www.google.com/images/branding/googlelogo/2x/googlelogo_color_272x92dp.png',
-      preview: 1,
+      preview: "true",
     }, {
       eventId: eventIds[1].id,
       url: 'https://www.google.com/images/branding/googlelogo/2x/googlelogo_color_272x92dp.png',
-      preview: 0,
+      preview: "false",
     }])
   },
 

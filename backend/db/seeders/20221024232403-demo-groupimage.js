@@ -20,12 +20,12 @@ module.exports = {
     {
       groupId: groupIds[0].id,
       url: 'https://www.google.com/images/branding/googlelogo/2x/googlelogo_color_272x92dp.png',
-      preview: true
+      preview: "true"
     },
     {
       groupId: groupIds[1].id,
       url: 'https://www.google.com/images/branding/googlelogo/2x/googlelogo_color_272x92dp.png',
-      preview: false
+      preview: "false"
     }], {});
   },
 
