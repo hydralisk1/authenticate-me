@@ -17,7 +17,7 @@ module.exports = (sequelize, DataTypes) => {
     eventId: {
       type: DataTypes.INTEGER,
       references: {
-        model: 'Events'
+        model: 'Events',
       },
       allowNull: false,
       onDelete: 'CASCADE'

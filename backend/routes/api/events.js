@@ -1,8 +1,48 @@
 const express = require('express')
-const { Event, Group, Venue, User, EventImage, sequelize } = require('../../db/models')
+const { Attendance, Event, Group, Venue, User, EventImage, sequelize } = require('../../db/models')
 const { requireAuth } = require('../../utils/auth')
 const { validateAddImage, validateAddEvent } = require('../../utils/validation')
 const router = express.Router()
+
+router.delete('/:eventId/attendance', requireAuth, async (req, res, next) => {
+    const event = await Event.findByPk(req.params.eventId, {
+        include: [{
+            model: Group,
+        },{
+            model: User,
+            where: {
+                id: req.body.userId
+            },
+            required: false
+        }]
+    })
+
+    if(!event){
+        const err = new Error('Event couldn\'t be found')
+        err.status = 404
+
+        return next(err)
+    }
+
+    if(!event.Users.length){
+        const err = new Error('Attendance does not exist for this User')
+        err.status = 404
+
+        return next(err)
+    }
+
+    if(req.user.id !== event.Group.organizerId && req.user.id !== req.body.userId){
+        const err = new Error('Only the User or organizer may delete an Attendance')
+        err.status = 403
+
+        return next(err)
+    }
+
+    await event.Users[0].Attendance.destroy()
+
+    return res.json({ message: 'Successfully deleted attendance from event' })
+    // return res.json(event.Users[0].Attendance)
+})
 
 router.post('/:eventId/images', requireAuth, validateAddImage, async (req, res, next) => {
     const { eventId } = req.params
