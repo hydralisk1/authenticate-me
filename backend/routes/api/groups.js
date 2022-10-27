@@ -1,6 +1,6 @@
 const express = require('express')
 const { Group, GroupImage, User, Venue, Membership, sequelize } = require('../../db/models')
-const { Op } = require('sequelize')
+const { Op, ValidationError } = require('sequelize')
 const { requireAuth, requireGroupAuth } = require('../../utils/auth')
 const { check } = require('express-validator')
 const { handleValidationErrors } = require('../../utils/validation')
@@ -62,6 +62,122 @@ const validateAddVenue = [
     handleValidationErrors
 ]
 
+router.put('/:groupId/membership', requireAuth, async (req, res, next) => {
+    const userId = req.user.id
+    const { groupId } = req.params
+    const { memberId, status } = req.body
+
+    if(status === 'pending'){
+        const err = new ValidationError('Cannot change a membership status to pending')
+        err.status = 400
+
+        return next(err)
+    }
+
+    const group = await Group.findByPk(groupId)
+
+    if(!group){
+        const err = new Error('Group couldn\'t be found')
+        err.status = 404
+
+        return next(err)
+    }
+
+    const user = await User.findByPk(memberId)
+
+    if(!user){
+        const err = new ValidationError('User couldn\'t be found')
+        err.status = 400
+
+        return next(err)
+    }
+
+    const member = await user.getJoinedGroups({
+        where: { id: groupId },
+        attributes: [],
+    })
+
+    if(!member.length){
+        const err = new Error('Membership between the user and the group does not exists')
+        err.status = 400
+
+        return next(err)
+    }
+
+    let role
+
+    if(group.organizerId === userId) role = 'organizer'
+    else {
+        const currentUser = await group.getMemberships({
+            where: { userId }
+        })
+
+        if(currentUser.length) role = currentUser[0].status
+    }
+
+    if((role !== 'organizer' && role !== 'co-host') || (status === 'co-host' && role !== 'organizer')){
+        const err = new Error('Permission denied')
+        err.status = 403
+
+        return next(err)
+    }
+
+    await member[0].Membership.update({
+        status
+    })
+
+    return res.json({
+        id: member[0].Membership.id, // id doesn't appear
+        groupId: member[0].Membership.groupId,
+        memberId: member[0].Membership.userId,
+        status: member[0].Membership.status,
+    })
+})
+
+router.post('/:groupId/membership', requireAuth, async (req, res, next) => {
+    const { groupId } = req.params
+
+    const group = await Group.findByPk(groupId)
+
+    if(!group){
+        const err = new Error('Group couldn\'t be found')
+        err.status = 404
+
+        return next(err)
+    }
+
+    const userId = req.user.id
+
+    const memberships = await group.getMemberships({
+        where: {
+            userId
+        }
+    })
+
+    if(memberships.length){
+        const err = new Error()
+
+        if(memberships.status === 'pending')
+            err.message = 'Membership has already been requested'
+        else err.message = 'User is already a member of the group'
+
+        err.status = 400
+
+        return next(err)
+    }
+
+    const newMember = await Membership.create({
+        userId,
+        groupId,
+        status: 'pending'
+    })
+
+    return res.json({
+        memberId: newMember.userId,
+        status: newMember.status
+    })
+})
+
 router.get('/:groupId/members', async (req, res, next) => {
     const { groupId } = req.params
     const where = {}
@@ -84,7 +200,7 @@ router.get('/:groupId/members', async (req, res, next) => {
         attributes: []
     })
 
-    if(!members) {
+    if(!members.length) {
         const err = new Error('Group couldn\'t be found')
         err.status = 404
 
