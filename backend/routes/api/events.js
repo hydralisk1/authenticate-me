@@ -421,8 +421,9 @@ router.get('/', async (req, res) => {
         },
         group: [['Event.id']],
         where,
-        // limit,
-        // offset
+        limit,
+        offset,
+        subQuery: false
     })
 
     return res.json({
