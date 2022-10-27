@@ -189,7 +189,20 @@ router.get('/:eventId', async (req, res, next) => {
     return res.json(event)
 })
 
-router.get('/', async (_req, res) => {
+router.get('/', async (req, res) => {
+    let { page, size, name, type, startDate } = req.query
+    const where = {}
+
+    page = !page || isNaN(page) || page < 1 ? 1 : page > 10 ? 10 : parseInt(page)
+    size = !size || isNaN(size) || size < 1 || size > 20 ? 20 : parseInt(size)
+
+    const limit = size
+    const offset = (page - 1) * size
+
+    if(name) where.name = name
+    if(type) where.type = type
+    if(startDate) where.startDate = startDate
+
     const events = await Event.findAll({
         include: [{
             model: Group,
@@ -212,7 +225,10 @@ router.get('/', async (_req, res) => {
                 [sequelize.col('EventImages.url'), 'previewImage']
             ],
         },
-        group: [['Event.id']]
+        group: [['Event.id']],
+        where,
+        // limit,
+        // offset
     })
 
     return res.json({
