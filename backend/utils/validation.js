@@ -1,4 +1,5 @@
 const { validationResult } = require('express-validator')
+const { check } = require('express-validator')
 
 const handleValidationErrors = (req, _res, next) => {
     const validationErrors = validationResult(req)
@@ -18,6 +19,28 @@ const handleValidationErrors = (req, _res, next) => {
     next()
 }
 
-module.exports = {
+const validateAddVenue = [
+    check('address')
+        .exists({ checkFalsy: true })
+        .withMessage('Street address is required'),
+    check('city')
+        .exists({ checkFalsy: true })
+        .withMessage('City is required'),
+    check('state')
+        .exists({ checkFalsy: true })
+        .withMessage('State is required'),
+    check('lat')
+        .exists({ checkFalsy: true})
+        .isFloat()
+        .withMessage('Latitude is not valid'),
+    check('lng')
+        .exists({ checkFalsy: true})
+        .isFloat()
+        .withMessage('Longitude is not valid'),
     handleValidationErrors
+]
+
+module.exports = {
+    handleValidationErrors,
+    validateAddVenue
 }

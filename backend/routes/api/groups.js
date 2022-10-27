@@ -3,7 +3,7 @@ const { Group, GroupImage, User, Venue, Membership, sequelize } = require('../..
 const { Op, ValidationError } = require('sequelize')
 const { requireAuth, requireGroupAuth } = require('../../utils/auth')
 const { check } = require('express-validator')
-const { handleValidationErrors } = require('../../utils/validation')
+const { handleValidationErrors, validateAddVenue } = require('../../utils/validation')
 
 const router = express.Router()
 
@@ -38,27 +38,6 @@ const validateAddImage = [
         .exists({ checkFalsy: true })
         .isBoolean()
         .withMessage('Preview should be a boolean value'),
-    handleValidationErrors
-]
-
-const validateAddVenue = [
-    check('address')
-        .exists({ checkFalsy: true })
-        .withMessage('Street address is required'),
-    check('city')
-        .exists({ checkFalsy: true })
-        .withMessage('City is required'),
-    check('state')
-        .exists({ checkFalsy: true })
-        .withMessage('State is required'),
-    check('lat')
-        .exists({ checkFalsy: true})
-        .isFloat()
-        .withMessage('Latitude is not valid'),
-    check('lng')
-        .exists({ checkFalsy: true})
-        .isFloat()
-        .withMessage('Longitude is not valid'),
     handleValidationErrors
 ]
 
