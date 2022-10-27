@@ -1,13 +1,54 @@
 const express = require('express')
 const { Group, GroupImage, User, Venue, Membership, Event, EventImage, sequelize } = require('../../db/models')
 const { Op, ValidationError } = require('sequelize')
-const { requireAuth, requireGroupAuth } = require('../../utils/auth')
+const { requireAuth } = require('../../utils/auth')
 const { validateAddVenue, validateCreateGroup, validateAddImage, validateAddEvent } = require('../../utils/validation')
 
 const router = express.Router()
 
-router.post('/:groupId/events', requireAuth, requireGroupAuth, validateAddEvent, async (req, res, next) => {
+const checkGroupAuth = (currentUser, userId) => {
+    if(currentUser.organizerId === userId) return true
+    if(!currentUser.Members.length) return false
+    if(currentUser.Members[0].Membership.status === 'co-host') return true
+    return false
+}
+
+router.post('/:groupId/events', requireAuth, validateAddEvent, async (req, res, next) => {
     const { groupId } = req.params
+    const currentUser = await Group.findByPk(groupId, {
+        include: [{
+            model: User,
+            as: 'Members',
+            where: { id: req.user.id },
+            through: {
+                attributes: ['status']
+            },
+            required: false
+        }, {
+            model: Event,
+            include: {
+                model: User,
+                through: {
+                    attributes: ['status']
+                }
+            }
+        }]
+    })
+
+    if(!currentUser){
+        const err = new Error('Group couldn\'t be found')
+        err.status = 404
+
+        return next(err)
+    }
+
+    if(!checkGroupAuth(currentUser, req.user.id)) {
+        const err = new Error('Permision denied')
+        err.status = 403
+
+        return next(err)
+    }
+
     const { venueId, name, type, capacity, price, description, startDate, endDate } = req.body
 
     const group = await Group.findByPk(groupId)
@@ -83,7 +124,7 @@ router.get('/:groupId/events', async (req, res, next) => {
         group: [['Event.id']]
     })
 
-    if(!events){
+    if(!events.length){
         const err = new Error('Group couldn\'t be found')
         err.status = 404
 
@@ -320,15 +361,67 @@ router.post('/:groupId/images', requireAuth, validateAddImage, async (req, res, 
     })
 })
 
-router.get('/:groupId/venues', requireAuth, requireGroupAuth, async (req, res) => {
+router.get('/:groupId/venues', requireAuth, async (req, res, next) => {
     const { groupId } = req.params
+    const currentUser = await Group.findByPk(groupId, {
+        include: {
+            model: User,
+            as: 'Members',
+            where: { id: req.user.id },
+            through: {
+                attributes: ['status']
+            },
+            required: false
+        }
+    })
+
+    if(!currentUser){
+        const err = new Error('Group couldn\'t be found')
+        err.status = 404
+
+        return next(err)
+    }
+
+    if(!checkGroupAuth(currentUser, req.user.id)) {
+        const err = new Error('Permision denied')
+        err.status = 403
+
+        return next(err)
+    }
+
     const venues = await Venue.findAll({ where: { groupId } })
 
     return res.json({ Venues: venues })
 })
 
-router.post('/:groupId/venues', requireAuth, requireGroupAuth, validateAddVenue, async (req, res) => {
+router.post('/:groupId/venues', requireAuth, validateAddVenue, async (req, res, next) => {
     const { groupId } = req.params
+    const currentUser = await Group.findByPk(groupId, {
+        include: [{
+            model: User,
+            as: 'Members',
+            where: { id: req.user.id },
+            through: {
+                attributes: ['status']
+            },
+            required: false,
+        }]
+    })
+
+    if(!currentUser){
+        const err = new Error('Group couldn\'t be found')
+        err.status = 404
+
+        return next(err)
+    }
+
+    if(!checkGroupAuth(currentUser, req.user.id)) {
+        const err = new Error('Permision denied')
+        err.status = 403
+
+        return next(err)
+    }
+
     const { address, city, state, lat, lng } = req.body
 
     const newVenue = await Venue.create({
