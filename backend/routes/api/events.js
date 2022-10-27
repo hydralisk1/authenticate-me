@@ -4,6 +4,77 @@ const { requireAuth } = require('../../utils/auth')
 const { validateAddImage, validateAddEvent } = require('../../utils/validation')
 const router = express.Router()
 
+router.put('/:eventId/attendance', requireAuth, async (req, res, next) => {
+    const { eventId } = req.params
+    const { userId, status } = req.body
+
+    if(status === 'pending'){
+        const err = new Error('Cannot change an attendance status to pending')
+        err.status = 400
+
+        return next(err)
+    }
+
+    const user = await Event.findByPk(eventId, {
+        include: [{
+            model: User,
+            through:{
+                attributes: ['status']
+            },
+            where: { id: userId },
+            required: false
+        },{
+            model: Group,
+            attributes: ['organizerId'],
+            include: [{
+                model: User,
+                as: 'Members',
+                through: {
+                    attributes: ['id', 'status']
+                }
+            }]
+        }]
+    })
+
+    if(!user){
+        const err = new Error('Event couldn\'t be found')
+        err.status = 404
+
+        return next(err)
+    }
+
+    if(!user.Users.length){
+        const err = new Error('Attendance between the user and the event does not exist')
+        err.status = 404
+
+        return next(err)
+    }
+
+    const currentUserId = req.user.id
+
+    if(currentUserId !== user.Group.organizerId
+        && !user.Group.Members.some(member => member.id === currentUserId && member.Membership.status === 'co-host')
+    ){
+        const err = new Error('Permission denied')
+        err.status = 403
+
+        return next(err)
+    }
+
+    const event = await User.findByPk(userId, {
+        include: {
+            model: Event,
+            through: {
+                where: { eventId }
+            }
+        }
+    })
+
+    await event.Events[0].Attendance.update({ status })
+
+    return res.json(event.Events[0].Attendance)
+})
+
 router.delete('/:eventId/attendance', requireAuth, async (req, res, next) => {
     const event = await Event.findByPk(req.params.eventId, {
         include: [{
@@ -41,7 +112,6 @@ router.delete('/:eventId/attendance', requireAuth, async (req, res, next) => {
     await event.Users[0].Attendance.destroy()
 
     return res.json({ message: 'Successfully deleted attendance from event' })
-    // return res.json(event.Users[0].Attendance)
 })
 
 router.post('/:eventId/images', requireAuth, validateAddImage, async (req, res, next) => {

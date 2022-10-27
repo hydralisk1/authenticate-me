@@ -34,7 +34,7 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING,
       allowNull: false,
       validate: {
-        isIn: [['member', 'waitlist', 'pending']]
+        isIn: [['member', 'waitlist', 'pending', 'attending']]
       }
     },
   }, {
