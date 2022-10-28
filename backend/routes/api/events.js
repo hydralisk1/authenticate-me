@@ -1,4 +1,5 @@
 const express = require('express')
+const { ValidationError } = require('sequelize')
 const { Attendance, Event, Group, Venue, User, EventImage, sequelize } = require('../../db/models')
 const { requireAuth } = require('../../utils/auth')
 const { validateAddImage, validateAddEvent } = require('../../utils/validation')
@@ -167,6 +168,13 @@ router.put('/:eventId/attendance', requireAuth, async (req, res, next) => {
 })
 
 router.delete('/:eventId/attendance', requireAuth, async (req, res, next) => {
+    if(!req.body.userId) {
+        const err = new ValidationError('Validation Error')
+        err.message = 'userId is required'
+        err.status = 400
+
+        return next(err)
+    }
     const event = await Event.findByPk(req.params.eventId, {
         include: [{
             model: Group,

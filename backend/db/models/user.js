@@ -24,7 +24,7 @@ module.exports = (sequelize, DataTypes) => {
       // define association here
       User.hasMany(
         models.Group,
-        { foreignKey: 'organizerId', onDelete: 'CASCADE', hooks: true }
+        { as: 'OrganizedGroups', foreignKey: 'organizerId', onDelete: 'CASCADE', hooks: true }
       )
       User.belongsToMany(
         models.Group,
@@ -70,6 +70,12 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   User.init({
+    id: {
+      type: DataTypes.INTEGER,
+      primaryKey: true,
+      autoIncrement: true,
+      allowNull: false
+    },
     username: {
       type: DataTypes.STRING(30),
       allowNull: false,

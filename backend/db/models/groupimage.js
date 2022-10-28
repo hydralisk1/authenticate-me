@@ -12,12 +12,17 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       // define association here
       GroupImage.belongsTo(
-        models.Group,
-        { foreignKey: 'groupId' }
+        models.Group
       )
     }
   }
   GroupImage.init({
+    id: {
+      type: DataTypes.INTEGER,
+      primaryKey: true,
+      autoIncrement: true,
+      allowNull: false
+    },
     groupId: {
       type: DataTypes.INTEGER,
       references: {

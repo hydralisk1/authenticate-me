@@ -13,10 +13,12 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       // define association here
       Group.belongsTo(models.User, { as: 'Organizer', foreignKey: 'organizerId' })
+
       Group.belongsToMany(
         models.User,
         { through: models.Membership, as: 'Members' }
       )
+
       Group.hasMany(
         models.GroupImage,
         { foreignKey: 'groupId', onDelete: 'CASCADE', hooks: true }
@@ -25,10 +27,7 @@ module.exports = (sequelize, DataTypes) => {
         models.Venue,
         { foreignKey: 'groupId', onDelete: 'CASCADE', hooks: true}
       )
-      Group.hasMany(
-        models.Membership,
-        { foreignKey: 'groupId', onDelete: 'CASCADE', hooks: true}
-      )
+
       Group.hasMany(
         models.Event,
         { foreignKey: 'groupId', onDelete: 'CASCADE', hooks: true}
@@ -42,6 +41,12 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   Group.init({
+    id: {
+      type: DataTypes.INTEGER,
+      primaryKey: true,
+      autoIncrement: true,
+      allowNull: false
+    },
     organizerId: {
       type: DataTypes.INTEGER,
       references: {
