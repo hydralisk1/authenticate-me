@@ -667,7 +667,7 @@ router.get('/', async (_req, res) => {
                 [sequelize.col('GroupImages.url'), 'previewImage']
             ]
         },
-        group: ['Group.id', 'GroupImages.url'],
+        group: ['Group.id', 'previewImage'],
     })
 
     return res.json({ Groups: groups })
