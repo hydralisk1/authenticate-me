@@ -666,7 +666,7 @@ router.get('/', async (_req, res) => {
                 [sequelize.fn('COUNT', sequelize.col('Members.id')), 'numMembers'],
             ]
         },
-        group: ['Group.id'],
+        group: ['Group.id', 'Members->Membership.id'],
         raw: true
     })
 
