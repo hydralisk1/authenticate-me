@@ -664,10 +664,10 @@ router.get('/', async (_req, res) => {
         attributes: {
             include: [
                 [sequelize.fn('COUNT', sequelize.col('Members.id')), 'numMembers'],
-                [sequelize.col('GroupImages.url'), 'previewImage']
+                [sequelize.literal('DISTINCT ON `GroupImages`.url'), 'previewImage']
             ]
         },
-        group: ['Group.id', 'previewImage'],
+        group: ['Group.id'],
     })
 
     return res.json({ Groups: groups })
