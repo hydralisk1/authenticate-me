@@ -100,20 +100,11 @@ router.get('/:groupId/events', async (req, res, next) => {
             attributes: ['id', 'city', 'state']
         },{
             model: User,
-            attributes: []
         },{
             model: EventImage,
-            attributes: [],
             where: { preview: true },
             required: false
         }],
-        attributes: {
-            include: [
-                [sequelize.fn('COUNT', sequelize.fn('DISTINCT', sequelize.col('Users.id'))), 'numAttending'],
-                [sequelize.col('EventImages.url'), 'previewImage']
-            ]
-        },
-        group: [['Event.id']]
     })
 
     if(!events.length){
@@ -123,7 +114,26 @@ router.get('/:groupId/events', async (req, res, next) => {
         return next(err)
     }
 
-    return res.json({ Events: events })
+    const data = events.map(event => {
+        const obj = {}
+
+        obj.id = event.id
+        obj.groupId = event.groupId
+        obj.venueId = event.venueId
+        obj.name = event.name
+        obj.type = event.type
+        obj.startDate = event.startDate
+        obj.endDate = event.endDate
+        obj.numAttending = event.Users.length
+        if(event.EventImages.length) obj.previewImage = event.EventImages[0].url
+        else obj.previewImage = null
+        obj.Group = event.Group
+        obj.Venue = event.Venue
+
+        return obj
+    })
+
+    return res.json({ Events: data })
 })
 
 router.delete('/:groupId/membership', requireAuth, async (req, res, next) => {
