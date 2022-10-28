@@ -5,38 +5,25 @@ const { requireAuth } = require('../../utils/auth')
 
 router.delete('/:imageId', requireAuth, async (req, res, next) => {
     const { imageId } = req.params
-    const image = await EventImage.findByPk(imageId)
-
-    if(!image){
-        const err = new Error('Image couldn\'t be found')
-        err.status = 404
-
-        return next(err)
-    }
-
-    const eventId = image.eventId
-
-    const user = await Event.findByPk(eventId, {
+    const image = await EventImage.findByPk(imageId, {
         include: [{
-            model: User,
-            through:{
-                attributes: ['status']
-            }
-        },{
-            model: Group,
-            attributes: ['organizerId'],
+            model: Event,
             include: [{
-                model: User,
-                as: 'Members',
-                through: {
-                    attributes: ['status']
-                }
+                model: Group,
+                attributes: ['organizerId'],
+                include: [{
+                    model: User,
+                    as: 'Members',
+                    through: {
+                        attributes: ['status']
+                    }
+                }]
             }]
         }]
     })
 
-    if(!user){
-        const err = new Error('Event couldn\'t be found')
+    if(!image){
+        const err = new Error('Event Image couldn\'t be found')
         err.status = 404
 
         return next(err)
@@ -44,8 +31,8 @@ router.delete('/:imageId', requireAuth, async (req, res, next) => {
 
     const userId = req.user.id
 
-    if(userId !== user.Group.organizerId
-        && !user.Group.Members.some(member => member.id === userId && member.Membership.status === 'co-host')
+    if(userId !== image.Event.Group.organizerId
+        && !image.Event.Group.Members.some(member => userId === member.id && member.Membership.status === 'co-host')
     ){
         const err = new Error('Permission denied')
         err.status = 403
