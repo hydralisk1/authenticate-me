@@ -379,13 +379,7 @@ router.get('/:eventId', async (req, res, next) => {
             model: EventImage
         },{
             model: User,
-            attributes: []
         }],
-        attributes: {
-            include: [
-                [sequelize.fn('COUNT', sequelize.col('Users.id')), 'numAttending'],
-            ]
-        }
     })
 
     if(!event || !event.id){
@@ -395,7 +389,11 @@ router.get('/:eventId', async (req, res, next) => {
         return next(err)
     }
 
-    return res.json(event)
+    const data = await event.toJSON()
+    data.numAttending = data.Users.length
+    delete data.Users
+
+    return res.json(data)
 })
 
 router.get('/', async (req, res) => {
