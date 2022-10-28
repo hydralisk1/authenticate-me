@@ -332,6 +332,7 @@ router.post('/:groupId/membership', requireAuth, async (req, res, next) => {
     })
 
     return res.json({
+        id: newMember.id,
         memberId: newMember.userId,
         status: newMember.status
     })

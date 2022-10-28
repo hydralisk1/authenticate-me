@@ -82,6 +82,7 @@ router.post('/:eventId/attendance', requireAuth, async (req, res, next) => {
     })
 
     return res.json({
+        id: newAttendance.id,
         userId: newAttendance.userId,
         status: newAttendance.status
     })
