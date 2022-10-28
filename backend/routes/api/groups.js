@@ -487,40 +487,23 @@ router.get('/current', requireAuth, async (req, res, next) => {
             include: [{
                 model: User,
                 as: 'Members',
-                attributes: [],
             },{
                 model: GroupImage,
                 attributes: ['url'],
                 where: { preview: "true" },
                 required: false,
-                right: true
             }],
-            attributes: {
-                include: [
-                    [sequelize.fn('COUNT', sequelize.fn('DISTINCT', sequelize.col('JoinedGroups.Members.id'))), 'numMembers'],
-                ],
-            },
-            through: { attributes: [] },
         },{
             model: Group,
             as: 'OrganizedGroups',
             include: [{
                 model: User,
                 as: 'Members',
-                attributes: [],
-                through: { attributes: [] }
             },{
                 model: GroupImage,
-                attributes: [['url', 'previewImage']],
                 where: { preview: "true" },
                 required: false,
-                right: true
             }],
-            attributes: {
-                include: [
-                    [sequelize.fn('COUNT', sequelize.fn('DISTINCT', sequelize.col('OrganizedGroups.Members.id'))), 'numMembers'],
-                ],
-            },
         }],
         attributes: [],
     })
@@ -538,9 +521,9 @@ router.get('/current', requireAuth, async (req, res, next) => {
         groups.state = d.state
         groups.createdAt = d.createdAt
         groups.updatedAt = d.updatedAt
-        groups.numMembers = d.numMembers
+        groups.numMembers = d.Members.length
         if(d.GroupImages.length) {
-            groups.previewImage = d.GroupImages[0].dataValues.previewImage
+            groups.previewImage = d.GroupImages[0].url
         }
         else groups.previewImage = null
 
