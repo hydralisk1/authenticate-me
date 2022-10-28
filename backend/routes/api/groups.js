@@ -651,43 +651,35 @@ router.get('/', async (_req, res) => {
     const groups = await Group.findAll({
         include: [{
             model: User,
-            attributes: [],
-            as: 'Members',
+            as: 'Members'
         },{
             model: GroupImage,
-            attributes: ['url'],
-            required: false,
-            where: {
-                preview: true
-            }
-        }],
-        attributes: {
-            include: [
-                [sequelize.fn('COUNT', sequelize.col('Members.id')), 'numMembers'],
-            ]
-        },
-        group: ['Group.id', 'Members->Membership.id', 'GroupImages.url'],
-        raw: true
+            where: { preview: 'true'},
+            required: false
+        }]
     })
 
-    return res.json({ Groups: groups.map(group => {
-        const values = {}
+    const data = groups.map(group => {
+        const obj = {}
 
-        values.id = group.id
-        values.organizerId = group.organizerId
-        values.name = group.name
-        values.about = group.about
-        values.type = group.type
-        values.private = group.private === 1
-        values.city = group.city
-        values.state = group.state
-        values.createdAt = group.createdAt
-        values.updatedAt = group.updatedAt
-        values.numMembers = group.numMembers
-        values.previewImage = group['GroupImages.url']
+        obj.id = group.id
+        obj.organizerId = group.organizerId
+        obj.name = group.name
+        obj.about = group.about
+        obj.type = group.type
+        obj.private = group.private
+        obj.city = group.city
+        obj.state = group.state
+        obj.createdAt = group.createdAt
+        obj.updatedAt = group.updatedAt
+        obj.numMembers = group.Members.length
+        if(group.GroupImages.length) obj.previewImage = group.GroupImages[0].url
+        else obj.previewImage = null
 
-        return values
-    }) })
+        return obj
+    })
+
+    return res.json(data)
 })
 
 router.post('/', requireAuth, validateCreateGroup, async (req, res, next) => {
