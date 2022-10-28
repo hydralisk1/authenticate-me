@@ -652,7 +652,7 @@ router.get('/', async (_req, res) => {
         include: [{
             model: User,
             attributes: [],
-            as: 'Members'
+            as: 'Members',
         },{
             model: GroupImage,
             attributes: ['url'],
@@ -666,8 +666,8 @@ router.get('/', async (_req, res) => {
                 [sequelize.fn('COUNT', sequelize.col('Members.id')), 'numMembers'],
             ]
         },
-        distinct: true,
         group: ['Group.id'],
+        raw: true
     })
 
     return res.json({ Groups: groups.map(group => {
@@ -678,14 +678,13 @@ router.get('/', async (_req, res) => {
         values.name = group.name
         values.about = group.about
         values.type = group.type
-        values.private = group.private
+        values.private = group.private === 1
         values.city = group.city
         values.state = group.state
         values.createdAt = group.createdAt
         values.updatedAt = group.updatedAt
         values.numMembers = group.numMembers
-        if(group.GroupImages.length) values.previewImage = group.GroupImages[0].url
-        else values.previewImage = null
+        values.previewImage = group['GroupImages.url']
 
         return values
     }) })
