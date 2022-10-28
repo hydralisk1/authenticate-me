@@ -655,7 +655,7 @@ router.get('/', async (_req, res) => {
             as: 'Members'
         },{
             model: GroupImage,
-            attributes: [],
+            attributes: ['url'],
             required: false,
             where: {
                 preview: true
@@ -664,14 +664,31 @@ router.get('/', async (_req, res) => {
         attributes: {
             include: [
                 [sequelize.fn('COUNT', sequelize.col('Members.id')), 'numMembers'],
-                [sequelize.col('GroupImages.url'), 'previewImage']
             ]
         },
         distinct: true,
         group: ['Group.id'],
     })
 
-    return res.json({ Groups: groups })
+    return res.json({ Groups: groups.map(group => {
+        const values = {}
+
+        values.id = group.id
+        values.organizerId = group.organizerId
+        values.name = group.name
+        values.about = group.about
+        values.type = group.type
+        values.private = group.private
+        values.city = group.city
+        values.state = group.state
+        values.createdAt = group.createdAt
+        values.updatedAt = group.updatedAt
+        values.numMembers = group.numMembers
+        if(group.GroupImages.length) values.previewImage = group.GroupImages[0].url
+        else values.previewImage = null
+
+        return values
+    }) })
 })
 
 router.post('/', requireAuth, validateCreateGroup, async (req, res, next) => {
