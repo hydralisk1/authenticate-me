@@ -664,9 +664,10 @@ router.get('/', async (_req, res) => {
         attributes: {
             include: [
                 [sequelize.fn('COUNT', sequelize.col('Members.id')), 'numMembers'],
-                [sequelize.literal('DISTINCT ON `GroupImages`.url'), 'previewImage']
+                [sequelize.col('GroupImages.url'), 'previewImage']
             ]
         },
+        distinct: true,
         group: ['Group.id'],
     })
 
