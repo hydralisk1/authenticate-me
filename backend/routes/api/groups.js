@@ -550,13 +550,7 @@ router.get('/:groupId', async (req, res, next) => {
         },{
             model: User,
             as: 'Members',
-            attributes: []
         }],
-        attributes: {
-            include: [
-                [sequelize.fn('COUNT', sequelize.fn('DISTINCT', sequelize.col('Members.id'))), 'numMembers']
-            ]
-        }
     })
 
     if(!group || !group.id){
@@ -567,7 +561,11 @@ router.get('/:groupId', async (req, res, next) => {
         return next(err)
     }
 
-    return res.json(group)
+    const converted = await group.toJSON()
+    converted.numMembers = converted.Members.length
+    delete converted.Members
+
+    return res.json(converted)
 })
 
 router.delete('/:groupId', requireAuth, async (req, res, next) => {
