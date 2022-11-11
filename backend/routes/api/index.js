@@ -18,8 +18,8 @@ router.use('/venues', venueRouter)
 router.use('/events', eventRouter)
 router.use('/event-images', eventImageRouter)
 
-router.post('/test', (req, res) => {
-    res.json({ requestBody: req.body })
-})
+// router.post('/test', (req, res) => {
+//     res.json({ requestBody: req.body })
+// })
 
 module.exports = router
