@@ -1,0 +1,29 @@
+.container {
+    max-width: 1120px;
+    margin: 140px auto 40px auto;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    column-gap: 80px;
+    padding: 0 16px;
+}
+
+.container > div {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.title {
+    font-size: 3rem;
+    font-weight: 900;
+    line-height: 1;
+    letter-spacing: -1px;
+}
+
+.paragraph {
+    margin-top: 16px;
+    font-size: 1rem;
+    font-weight: 400;
+    line-height: 1.5;
+    letter-spacing: 1.2px;
+}

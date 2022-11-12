@@ -1,8 +1,13 @@
 import { createStore, combineReducers, applyMiddleware, compose } from 'redux'
 import thunk from 'redux-thunk'
+import sessionReducer from './session'
+import languageReducer from './language'
+import modalReducer from './modal'
 
 const rootReducer = combineReducers({
-
+    session: sessionReducer,
+    language: languageReducer,
+    modal: modalReducer,
 })
 
 let enhancer
