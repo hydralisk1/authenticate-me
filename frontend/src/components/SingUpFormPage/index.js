@@ -9,8 +9,8 @@ import closeIcon from '../../assets/x-symbol-svgrepo-com.svg'
 
 const SignUpFormPage = ({ currState }) => {
     const dispatch = useDispatch()
-    const [openSignUpModal, setOpenSignUpModal] = currState
     const currLanguage = useSelector(state => state.language)
+    const [openSignUpModal, setOpenSignUpModal] = currState
 
     const [firstName, setFirstName] = useState('')
     const [lastName, setLastName] = useState('')
@@ -75,7 +75,7 @@ const SignUpFormPage = ({ currState }) => {
 
         if(password.length < 6) setPasswordError(scripts[currLanguage].PasswordRequired)
         else setPasswordError('')
-    }, [firstName, lastName, email, password, username])
+    }, [firstName, lastName, email, password, username, currLanguage])
 
     return (
         <>

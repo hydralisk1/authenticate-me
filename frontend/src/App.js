@@ -5,6 +5,7 @@ import { Switch, Route } from 'react-router-dom';
 import { signIn } from './store/session'
 import { setLanguage } from './store/language';
 import MainPage from './components/MainPage'
+import TopMenuLayout from './components/MainPage/TopMenuLayout';
 
 function App() {
   const dispatch = useDispatch()
@@ -28,11 +29,14 @@ function App() {
   }, [dispatch])
 
   return (
-    <Switch>
-      <Route exact path='/'>
-        <MainPage />
-      </Route>
-    </Switch>
+    <>
+      <TopMenuLayout />
+      <Switch>
+        <Route exact path='/'>
+          <MainPage />
+        </Route>
+      </Switch>
+    </>
   );
 }
 

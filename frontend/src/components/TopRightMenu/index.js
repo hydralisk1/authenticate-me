@@ -64,7 +64,14 @@ const TopRightMenu = () => {
                 {/* Sign In - should be modified after implementing home page for signed in users */}
                 { currUser === null ?
                     <li className={styles.sign} onClick={openLogin}>{scripts[currLanguage].LogIn}</li>
-                    : <li className={styles.sign} onClick={() => dispatch(signOut())}>{scripts[currLanguage].LogOut}</li>
+                    : <li className={styles.sign} onClick={() => {
+                        dispatch(signOut())
+                        const keys = ['id', 'firstName', 'lastName', 'username', 'email']
+
+                        Cookies.set('keepLogin', 'n')
+                        for(const key of keys)
+                            Cookies.remove(key)
+                    }}>{scripts[currLanguage].LogOut}</li>
                 }
                 {/* Sign Up menu */}
                 <li className={styles.sign} onClick={openSignUp}>{scripts[currLanguage].SignUp}</li>
