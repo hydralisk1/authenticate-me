@@ -5,7 +5,6 @@ import styles from './mainBody.module.css'
 
 const MainBodyLayout = () => {
     const currLanguage = useSelector(state => state.language)
-    console.log(scripts)
 
     return (
         <div className={styles.container}>
