@@ -54,6 +54,7 @@
     transition: all 1s ease;
     opacity: 0;
     visibility: hidden;
+    overflow: hidden;
 }
 
 .modalVisible {

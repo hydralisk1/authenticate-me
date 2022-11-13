@@ -4,20 +4,21 @@
     background-color: white;
     position: absolute;
     padding: 36px 70px 32px 70px;
-    bottom: 40%;
+    top: 60px;
     right: 50%;
-    transform: translate(50%, 50%);
-    scroll-behavior: smooth;
+    transform: translateX(50%);
     display: flex;
     flex-direction: column;
     align-items: center;
     visibility: hidden;
     opacity: 0;
     transition: all 1s ease;
+    max-height: 100%;
+    overflow-y: auto;
 }
 
 .containerVisible {
-    bottom: 50%;
+    top: 20px;
     visibility: visible;
     opacity: 1;
 }

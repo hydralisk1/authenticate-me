@@ -1,3 +1,4 @@
+import Cookies from 'js-cookie'
 import { useSelector, useDispatch } from 'react-redux'
 import { useState, useEffect } from 'react'
 import { signInUser } from '../../store/session'
@@ -15,6 +16,7 @@ const LoginFormPage = ({ currState }) => {
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
     const [emailClicked, setEmailClicked] = useState(false)
+    const [keepLogin, setKeepLogin] = useState(false)
     const [passwordClicked, setPasswordClicked] = useState(false)
     const [emailErrorMessage, setEmailErrorMessage] = useState('')
     const [passwordErrorMessage, setPasswordErrorMessage] = useState('')
@@ -42,13 +44,34 @@ const LoginFormPage = ({ currState }) => {
         e.preventDefault()
 
         if(emailErrorMessage === '' && passwordErrorMessage === ''){
-            const result = dispatch(signInUser({ credential: email, password }))
-            // redirect homepage after implementing it
-            if(result.ok) closeLogin()
-            else {
-                setUnauthorized(true)
-                setTimeout(() => {setUnauthorized(false)}, 4000)
-            }
+            // const result = dispatch(signInUser({ credential: email, password }))
+            // // redirect homepage after implementing it
+            // if(result.ok) {
+            //     closeLogin()
+            // }
+            // else {
+            //     setUnauthorized(true)
+            //     setTimeout(() => {setUnauthorized(false)}, 4000)
+            // }
+            dispatch(signInUser({ credential: email, password }))
+                .then(res => {
+                    if(res.ok){
+                        const keys = ['id', 'firstName', 'lastName', 'username', 'email']
+                        if(keepLogin) {
+                            Cookies.set('keepLogin', 'y', {expires: 30})
+                            for(const key of keys)
+                                Cookies.set(key, res[key], {expires: 30})
+                        }else{
+                            Cookies.set('keepLogin', 'n')
+                            for(const key of keys)
+                                Cookies.remove(key)
+                        }
+                        closeLogin()
+                    }else{
+                        setUnauthorized(true)
+                        setTimeout(() => {setUnauthorized(false)}, 4000)
+                    }
+                })
         }
     }
 
@@ -110,6 +133,7 @@ const LoginFormPage = ({ currState }) => {
                         <input
                             type='checkbox'
                             className={styles.checkBox}
+                            onChange={(e) => setKeepLogin(e.target.checked)}
                         />
                         <span className={styles.keepMeSignedIn}>{scripts[currLanguage].KeepMeSignedIn}</span>
                     </div>
@@ -121,7 +145,7 @@ const LoginFormPage = ({ currState }) => {
                     {scripts[currLanguage].IssuesWithLogIn}
                 </div>
             </div>
-            { unauthorized && <ModalError message={scripts[currLanguage].AuthError} trigger={unauthorized} />}
+            { unauthorized && <ModalError message={scripts[currLanguage].AuthError} />}
         </>
     )
 }

@@ -5,7 +5,7 @@ const SIGN_IN = 'session/SIGN_IN'
 const SIGN_OUT = 'session/SIGN_OUT'
 
 // action creators
-const signIn = user => ({
+export const signIn = user => ({
     type: SIGN_IN,
     user
 })
@@ -25,6 +25,24 @@ export const signInUser = credential => async dispatch => {
 
         const result = await response.json()
         dispatch(signIn(result))
+        result.ok = true
+        return result
+    }catch(e){
+        return e
+    }
+}
+
+export const signUpUser = user => async dispatch => {
+    try{
+        const response = await csrfFetch('/api/users', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json'},
+            body: JSON.stringify(user)
+        })
+
+        const result = await response.json()
+        dispatch(signIn(result))
+        result.ok = true
         return result
     }catch(e){
         return e
@@ -34,9 +52,13 @@ export const signInUser = credential => async dispatch => {
 const sessionReducer = (state = { user: null }, action) => {
     switch(action.type){
         case SIGN_IN:
-            const user = {...action.user}
-            delete user.firstName
-            delete user.lastName
+            const user = {
+                id: action.user.id,
+                firstName: action.user.firstName,
+                lastName: action.user.lastName,
+                email: action.user.email,
+                username: action.user.username
+            }
 
             return { user }
 

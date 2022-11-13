@@ -34,13 +34,19 @@ const validateSignup = [
 
 const router = express.Router()
 
-router.post('/', validateSignup, async (req, res) => {
+router.post('/', validateSignup, async (req, res, next) => {
     const { email, password, username, firstName, lastName } = req.body
-    const user = await User.signup({ email, username, password, firstName, lastName })
 
-    setTokenCookie(res, user)
+    try{
+        const user = await User.signup({ email, username, password, firstName, lastName })
+        setTokenCookie(res, user)
 
-    return res.json(user)
+        return res.status(201).json(user)
+    }catch(err) {
+        err.status = 409
+        err.title = 'Signup failed'
+        return next(err)
+    }
 })
 
 module.exports = router

@@ -1,0 +1,115 @@
+.container {
+    width: 484px;
+    border-radius: 8px;
+    background-color: white;
+    position: absolute;
+    padding: 36px 70px 32px 70px;
+    top: 60px;
+    right: 50%;
+    transform: translateX(50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    visibility: hidden;
+    opacity: 0;
+    transition: all 1s ease;
+    max-height: 100%;
+    overflow-y: auto;
+}
+
+.containerVisible {
+    top: 20px;
+    visibility: visible;
+    opacity: 1;
+}
+
+.closeButton {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    cursor: pointer;
+}
+
+.title {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 24px;
+}
+
+.top {
+    line-height: 2rem;
+    padding-bottom: 2rem;
+    width: 100%;
+}
+
+.label {
+    font-weight: 700;
+    padding-bottom: 4px;
+}
+
+.form {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+.inputForm {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 8px;
+}
+
+.input:focus {
+    border: 1px solid #388092;
+    outline: none;
+}
+
+.input {
+    border-radius: 8px;
+    padding: 0.5rem 1rem;
+    border: 1px solid darkgray;
+    margin-bottom: 4px;
+}
+
+.checkBox {
+    accent-color: #388092;
+    width: 1.5rem;
+}
+
+.overage {
+    font-size: 0.875rem;
+}
+
+.submitButton {
+    width: 100%;
+    border-radius: 8px;
+    background-color: #e4635e;
+    color: white;
+    border: none;
+    font-size: 1.1rem;
+    font-weight: 500;
+    padding: 0.7rem;
+    cursor: pointer;
+    margin: 16px 0;
+}
+
+.messageContainer {
+    width: 100%;
+    font-size: 0.875rem;
+    height: 32px;
+}
+
+.errorMessage {
+    color: red;
+}
+
+.policy {
+    text-align: center;
+    font-size: 0.875rem;
+    margin: 12px 0;
+}
+
+.login {
+    text-align: center;
+}
