@@ -2,7 +2,6 @@ import { useState } from 'react'
 import Cookies from 'js-cookie'
 import { setLanguage } from '../../store/language'
 import { setModal } from '../../store/modal'
-import { signOutUser } from '../../store/session'
 import { useSelector, useDispatch } from 'react-redux'
 import scripts from './scripts'
 import styles from './topRight.module.css'
@@ -12,7 +11,6 @@ import SignUpFormPage from '../SingUpFormPage'
 
 const TopRightMenu = () => {
     const currLanguage = useSelector(state => state.language)
-    const currUser = useSelector(state => state.session).user
     const [showLanguages, setShowLanguages] = useState(false)
     const [openLoginModal, setOpenLoginModal] = useState(false)
     const [openSignUpModal, setOpenSignUpModal] = useState(false)
@@ -62,13 +60,8 @@ const TopRightMenu = () => {
                 </li>
                 <li onClick={() => setShowLanguages(!showLanguages)}>{scripts[currLanguage].Language}</li>
                 {/* Sign In - should be modified after implementing home page for signed in users */}
-                { currUser === null ?
-                    <li className={styles.sign} onClick={openLogin}>{scripts[currLanguage].LogIn}</li>
-                    : <li className={styles.sign} onClick={() => {
-                        dispatch(signOutUser())
-                        localStorage.removeItem('userPersist')
-                    }}>{scripts[currLanguage].LogOut}</li>
-                }
+                <li className={styles.sign} onClick={openLogin}>{scripts[currLanguage].LogIn}</li>
+
                 {/* Sign Up menu */}
                 <li className={styles.sign} onClick={openSignUp}>{scripts[currLanguage].SignUp}</li>
             </ul>

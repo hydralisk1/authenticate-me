@@ -1,0 +1,9 @@
+.container {
+    max-width: 1384px;
+    margin: 24px auto 0 auto;
+}
+
+.sayHi {
+    font-size: 2.625rem;
+    font-weight: 700;
+}

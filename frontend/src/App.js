@@ -1,14 +1,19 @@
 import Cookies from 'js-cookie';
-import { useEffect } from 'react';
-import { useDispatch } from 'react-redux'
+import { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux'
 import { Switch, Route } from 'react-router-dom';
 import { signIn } from './store/session'
 import { setLanguage } from './store/language';
+import { Redirect } from 'react-router-dom';
 import MainPage from './components/MainPage'
-import TopMenuLayout from './components/MainPage/TopMenuLayout';
+import HomePage from './components/HomePage';
+import LogOut from './components/LogOut';
+
 
 function App() {
   const dispatch = useDispatch()
+  const [loggedIn, setLoggedIn] = useState(false)
+  const user = useSelector(state => state.session.user)
 
   useEffect(() => {
     // language setting
@@ -24,15 +29,22 @@ function App() {
     }
   }, [dispatch])
 
+  useEffect(() =>{
+    setLoggedIn(!!user)
+  }, [user])
+
   return (
-    <>
-      <TopMenuLayout />
-      <Switch>
-        <Route exact path='/'>
-          <MainPage />
-        </Route>
-      </Switch>
-    </>
+    <Switch>
+      <Route path='/home'>
+        {loggedIn ? <HomePage /> : <Redirect to='/' />}
+      </Route>
+      <Route path='/logout'>
+        <LogOut />
+      </Route>
+      <Route exact path='/'>
+        {loggedIn ? <Redirect to='/home' /> : <MainPage />}
+      </Route>
+    </Switch>
   );
 }
 

@@ -1,0 +1,36 @@
+.input {
+    width: 210px;
+    height: 42px;
+    padding: 8px 16px;
+    border: 1px solid rgb(217, 217, 217);
+    margin-right: -1px;
+}
+
+.input:hover, .input:focus {
+    border: 1px solid black;
+}
+
+.input:focus {
+    outline: none;
+}
+
+.form {
+    display: flex;
+    align-items: center;
+}
+
+.submitButton {
+    width: 42px;
+    height: 42px;
+    background-color: #e4635e;
+    color: white;
+    border: none;
+    border-top-right-radius: 8px;
+    border-bottom-right-radius: 8px;
+    cursor: pointer;
+}
+
+.form > input:first-child {
+    border-top-left-radius: 8px;
+    border-bottom-left-radius: 8px;
+}
