@@ -37,34 +37,43 @@ const LoginFormPage = ({ currState }) => {
         setPasswordErrorMessage(passwordError)
     }, [email, password, currLanguage])
 
+    const demouserLogin = () => {
+        const credential = {credential: "john.smith@gmail.com", password: "secret password"}
+        logIn(credential)
+    }
+
+    const logIn = (credential) => {
+        dispatch(signInUser(credential))
+            .then(res => {
+                if(res.ok){
+                    const user = {
+                        id: res.id,
+                        username: res.username,
+                        firstName: res.firstName,
+                        lastName: res.lastName,
+                        email: res.email
+                    }
+
+                    localStorage.setItem('userPersist', JSON.stringify(user))
+
+                    setEmail('')
+                    setPassword('')
+                    setEmailClicked(false)
+                    setPasswordClicked(false)
+                    closeLogin()
+                }else{
+                    setUnauthorized(true)
+                    setTimeout(() => {setUnauthorized(false)}, 4000)
+                }
+            })
+    }
+
     // handling submit form
     const handleSubmit = (e) => {
         e.preventDefault()
 
         if(emailErrorMessage === '' && passwordErrorMessage === ''){
-            dispatch(signInUser({ credential: email, password }))
-                .then(res => {
-                    if(res.ok){
-                        const user = {
-                            id: res.id,
-                            username: res.username,
-                            firstName: res.firstName,
-                            lastName: res.lastName,
-                            email: res.email
-                        }
-
-                        localStorage.setItem('userPersist', JSON.stringify(user))
-
-                        setEmail('')
-                        setPassword('')
-                        setEmailClicked(false)
-                        setPasswordClicked(false)
-                        closeLogin()
-                    }else{
-                        setUnauthorized(true)
-                        setTimeout(() => {setUnauthorized(false)}, 4000)
-                    }
-                })
+            logIn({ credential: email, password })
         }
     }
 
@@ -126,9 +135,12 @@ const LoginFormPage = ({ currState }) => {
                         <button type='submit' className={styles.submitButton}>{scripts[currLanguage].LogIn}</button>
                     </div>
                 </form>
-                <div>
-                    {scripts[currLanguage].IssuesWithLogIn}
+                <div className={styles.stretch}>
+                        <button className={styles.submitButton} onClick={demouserLogin}>{scripts[currLanguage].DemouserLogIn}</button>
                 </div>
+                {/* <div>
+                    {scripts[currLanguage].IssuesWithLogIn}
+                </div> */}
             </div>
             { unauthorized && <ModalError message={scripts[currLanguage].AuthError} />}
         </>

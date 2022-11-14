@@ -1,3 +1,4 @@
+import ShowingEvents from './ShowingEvents'
 import { useSelector } from 'react-redux'
 import styles from './homepage.module.css'
 import scripts from './scripts'
@@ -11,6 +12,7 @@ const HomePageLayout = () => {
             <div className={styles.sayHi}>
                 {scripts[currLanguage].SayHi}{user.firstName}{" "}👋
             </div>
+            <ShowingEvents />
         </main>
     )
 }

@@ -1,0 +1,28 @@
+.container {
+    display: flex;
+    max-width: 1384px;
+    flex-direction: column;
+    margin-top: 30px;
+}
+
+.yourEvents {
+    font-size: 1.5rem;
+}
+
+.subContainer {
+    display: flex;
+}
+
+.left {
+    width: 368px;
+    display: flex;
+    flex-direction: column;
+}
+
+.calendar {
+    width: 100%;
+}
+
+.yourInterests {
+    width: 100%;
+}
