@@ -50,7 +50,18 @@ const SignUpFormPage = ({ currState }) => {
 
             dispatch(signUpUser(user))
                 .then(res => {
-                    if(res.ok) closeSignUp()
+                    if(res.ok) {
+                        const user = {
+                            id: res.id,
+                            username: res.username,
+                            firstName: res.firstName,
+                            lastName: res.lastName,
+                            email: res.email
+                        }
+
+                        localStorage.setItem('userPersist', JSON.stringify(user))
+                        closeSignUp()
+                    }
                     else {
                         setSignUpError(true)
                         setTimeout(() => {setSignUpError(false)}, 4000)

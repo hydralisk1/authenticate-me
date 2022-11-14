@@ -2,7 +2,7 @@ import { useState } from 'react'
 import Cookies from 'js-cookie'
 import { setLanguage } from '../../store/language'
 import { setModal } from '../../store/modal'
-import { signOut } from '../../store/session'
+import { signOutUser } from '../../store/session'
 import { useSelector, useDispatch } from 'react-redux'
 import scripts from './scripts'
 import styles from './topRight.module.css'
@@ -65,12 +65,8 @@ const TopRightMenu = () => {
                 { currUser === null ?
                     <li className={styles.sign} onClick={openLogin}>{scripts[currLanguage].LogIn}</li>
                     : <li className={styles.sign} onClick={() => {
-                        dispatch(signOut())
-                        const keys = ['id', 'firstName', 'lastName', 'username', 'email']
-
-                        Cookies.set('keepLogin', 'n')
-                        for(const key of keys)
-                            Cookies.remove(key)
+                        dispatch(signOutUser())
+                        localStorage.removeItem('userPersist')
                     }}>{scripts[currLanguage].LogOut}</li>
                 }
                 {/* Sign Up menu */}

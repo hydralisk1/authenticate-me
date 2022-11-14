@@ -1,4 +1,3 @@
-import Cookies from 'js-cookie'
 import { useSelector, useDispatch } from 'react-redux'
 import { useState, useEffect } from 'react'
 import { signInUser } from '../../store/session'
@@ -16,7 +15,6 @@ const LoginFormPage = ({ currState }) => {
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
     const [emailClicked, setEmailClicked] = useState(false)
-    const [keepLogin, setKeepLogin] = useState(false)
     const [passwordClicked, setPasswordClicked] = useState(false)
     const [emailErrorMessage, setEmailErrorMessage] = useState('')
     const [passwordErrorMessage, setPasswordErrorMessage] = useState('')
@@ -44,28 +42,23 @@ const LoginFormPage = ({ currState }) => {
         e.preventDefault()
 
         if(emailErrorMessage === '' && passwordErrorMessage === ''){
-            // const result = dispatch(signInUser({ credential: email, password }))
-            // // redirect homepage after implementing it
-            // if(result.ok) {
-            //     closeLogin()
-            // }
-            // else {
-            //     setUnauthorized(true)
-            //     setTimeout(() => {setUnauthorized(false)}, 4000)
-            // }
             dispatch(signInUser({ credential: email, password }))
                 .then(res => {
                     if(res.ok){
-                        const keys = ['id', 'firstName', 'lastName', 'username', 'email']
-                        if(keepLogin) {
-                            Cookies.set('keepLogin', 'y', {expires: 30})
-                            for(const key of keys)
-                                Cookies.set(key, res[key], {expires: 30})
-                        }else{
-                            Cookies.set('keepLogin', 'n')
-                            for(const key of keys)
-                                Cookies.remove(key)
+                        const user = {
+                            id: res.id,
+                            username: res.username,
+                            firstName: res.firstName,
+                            lastName: res.lastName,
+                            email: res.email
                         }
+
+                        localStorage.setItem('userPersist', JSON.stringify(user))
+
+                        setEmail('')
+                        setPassword('')
+                        setEmailClicked(false)
+                        setPasswordClicked(false)
                         closeLogin()
                     }else{
                         setUnauthorized(true)
@@ -128,14 +121,6 @@ const LoginFormPage = ({ currState }) => {
                     </div>
                     <div className={`${styles.stretch} ${styles.error}`}>
                         {passwordClicked && passwordErrorMessage}
-                    </div>
-                    <div className={`${styles.stretch} ${styles.alignCenter}`}>
-                        <input
-                            type='checkbox'
-                            className={styles.checkBox}
-                            onChange={(e) => setKeepLogin(e.target.checked)}
-                        />
-                        <span className={styles.keepMeSignedIn}>{scripts[currLanguage].KeepMeSignedIn}</span>
                     </div>
                     <div className={styles.stretch}>
                         <button type='submit' className={styles.submitButton}>{scripts[currLanguage].LogIn}</button>

@@ -10,7 +10,7 @@ export const signIn = user => ({
     user
 })
 
-export const signOut = () => ({
+const signOut = () => ({
     type: SIGN_OUT,
 })
 
@@ -32,6 +32,15 @@ export const signInUser = credential => async dispatch => {
     }
 }
 
+export const signOutUser = () => async dispatch => {
+    try{
+        await csrfFetch('/api/session/', {method: 'DELETE'})
+        dispatch(signOut())
+    }catch(e){
+        return e
+    }
+}
+
 export const signUpUser = user => async dispatch => {
     try{
         const response = await csrfFetch('/api/users', {
@@ -44,6 +53,17 @@ export const signUpUser = user => async dispatch => {
         dispatch(signIn(result))
         result.ok = true
         return result
+    }catch(e){
+        return e
+    }
+}
+
+export const restoreUser = () => async dispatch => {
+    try {
+        const response = await csrfFetch('/api/session')
+        const result = await response.json()
+        dispatch(signIn(result.user))
+        return result.user
     }catch(e){
         return e
     }

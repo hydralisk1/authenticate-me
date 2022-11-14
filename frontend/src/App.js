@@ -17,14 +17,10 @@ function App() {
     Cookies.set('language', language, { expires: 30 })
 
     // session setting
-    if(Cookies.get('keepLogin') === 'y'){
-      const user ={}
-      const keys = ['id', 'firstName', 'lastName', 'username', 'email']
+    const user = localStorage.getItem('userPersist')
 
-      for(const key of keys)
-        user[key] = Cookies.get(key)
-
-      dispatch(signIn(user))
+    if(user){
+      dispatch(signIn(JSON.parse(user)))
     }
   }, [dispatch])
 
