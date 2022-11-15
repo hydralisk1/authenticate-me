@@ -1,0 +1,75 @@
+.titleContainer {
+    width: 100%;
+    border-bottom: 1px solid darkgray;
+}
+
+.bodyContainer {
+    width: 100%;
+    background-color: rgb(246, 247, 248);
+}
+
+.content {
+    width: 1120px;
+    margin: 0 auto;
+    padding: 16px 8px;
+}
+
+.body {
+    padding-top: 48px;
+    display: grid;
+    grid-template-columns: 1fr 347px;
+    column-gap: 7rem;
+}
+
+.left {
+    display: inline-block;
+}
+
+.eventName {
+    font-size: 1.875rem;
+    font-weight: 700;
+}
+
+.desc {
+    margin-bottom: 3rem;
+}
+
+.attendees {
+    display: grid;
+    grid-template-columns: repeat(4, 147px);
+    gap: 1rem;
+}
+
+.attendee {
+    padding: 20px 8px;
+    border-radius: 6px;
+    background-color: white;
+    text-align: center;
+    height: 200px;
+}
+
+h2 {
+    margin: 20px 0;
+    font-size: 1.25rem;
+    font-weight: 700;
+}
+
+.profile {
+    width: 72px;
+    height: 72px;
+    border-radius: 50%;
+    background-color: #388092;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    font-weight: 700;
+    font-size: 1.5rem;
+    margin: 0 auto 1rem auto;
+}
+
+.attendance {
+    color: darkgray;
+    font-size: 0.875rem;
+    margin-top: 1rem;
+}

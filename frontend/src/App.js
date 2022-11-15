@@ -2,15 +2,13 @@ import Cookies from 'js-cookie';
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux'
 import { Switch, Route } from 'react-router-dom';
-// import { signIn } from './store/session'
 import { setLanguage } from './store/language';
 import { Redirect } from 'react-router-dom';
 import { restoreUser } from './store/session';
 import MainPage from './components/MainPage'
 import HomePage from './components/HomePage';
 import LogOut from './components/LogOut';
-import EventDetails from './components/EventDetails';
-
+import EventDetail from './components/EventDetail';
 
 function App() {
   const dispatch = useDispatch()
@@ -29,42 +27,10 @@ function App() {
       })
   }, [dispatch])
 
-  // useEffect(() => {
-  //   setIsLoggedIn(!!user)
-  // }, [user])
-
-  // const user = useSelector(state => state.session.user)
-  // const [loggedIn, setLoggedIn] = useState(!!user)
-  // const [completeSetting, setCompleteSetting] = useState(false)
-
-  // useEffect(() => {
-  //   // language settings
-  //   setCompleteSetting(false)
-  //   const language = Cookies.get('language') || 'EN'
-  //   dispatch(setLanguage(language))
-  //   Cookies.set('language', language, { expires: 30 })
-
-  //   // session setting
-  //   const user = localStorage.getItem('userPersist')
-
-  //   if(user){
-  //     dispatch(signIn(JSON.parse(user)))
-  //     setLoggedIn(true)
-  //   }else{
-  //     setLoggedIn(false)
-  //   }
-
-  //   setCompleteSetting(true)
-  // }, [dispatch])
-
-  // useEffect(() => {
-  //   setLoggedIn(!!user)
-  // }, [user])
-
   return (
     <Switch>
       <Route path='/events/:eventId'>
-        {isLoaded && (isLoggedIn ? <EventDetails /> : <Redirect to='/' />)}
+        {isLoaded && (isLoggedIn ? <EventDetail /> : <Redirect to='/' />)}
       </Route>
       <Route path='/home'>
         {isLoaded && (isLoggedIn ? <HomePage /> : <Redirect to='/' />)}
