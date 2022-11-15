@@ -34,9 +34,12 @@ export const signInUser = credential => async dispatch => {
 
 export const signOutUser = () => async dispatch => {
     try{
-        await csrfFetch('/api/session/', {method: 'DELETE'})
+        const response = await csrfFetch('/api/session', {method: 'DELETE'})
+        const result = await response.json()
         dispatch(signOut())
-    }catch(e){
+
+        return result
+    } catch(e) {
         return e
     }
 }
@@ -62,14 +65,17 @@ export const restoreUser = () => async dispatch => {
     try {
         const response = await csrfFetch('/api/session')
         const result = await response.json()
-        dispatch(signIn(result.user))
-        return result.user
-    }catch(e){
-        return e
+        if(result.user) {
+            dispatch(signIn(result.user))
+            return true
+        }
+        return false
+    }catch {
+        return false
     }
 }
 
-const sessionReducer = (state = { user: null }, action) => {
+const sessionReducer = (state = { user: null, isLoggedIn: false }, action) => {
     switch(action.type){
         case SIGN_IN:
             const user = {
@@ -80,10 +86,10 @@ const sessionReducer = (state = { user: null }, action) => {
                 username: action.user.username
             }
 
-            return { user }
+            return { user, isLoggedIn: true }
 
         case SIGN_OUT:
-            return { user: null }
+            return { user: null, isLoggedIn: false }
 
         default:
             return state

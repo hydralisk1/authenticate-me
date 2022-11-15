@@ -1,6 +1,7 @@
 import { csrfFetch } from '../../../../store/csrf'
 import { useSelector } from 'react-redux'
 import { useState, useEffect } from 'react'
+import { Link } from 'react-router-dom'
 import Cats from './Cats'
 import styles from './showevents.module.css'
 import scripts from './scripts'
@@ -115,7 +116,7 @@ const ShowingEvents = () => {
         )
     }
 
-    useEffect(getEvents, [])
+    useEffect(getEvents, [currLanguage])
 
     return (
         <div className={styles.container}>
@@ -131,28 +132,30 @@ const ShowingEvents = () => {
                     {events.length === 0 ?
                         'Loading' :
                         events.map(event =>
-                            <div className={styles.event} key={event.id}>
-                                <div className={styles.imgHolder} key={event.startDate}>
-                                    {
-                                        event.type === 'Online' && <div className={styles.online}><img src={onlineVideo} alt='online' width="18px" height="18px" />{" "}{scripts[currLanguage].OnlineEvent}</div>
-                                    }
-                                    {
-                                        event.previewImage ?
-                                            <img src={event.previewImage} style={{borderRadius: '4px'}} alt='preview' key={event.endDate} width='168px' onError={(e) => e.target.src = brokenLink} /> :
-                                            <Cats key={event.endDate} />
-                                    }
-                                </div>
-                                <div key={event.id + event.startDate} className={styles.eventDesc}>
-                                    <div key={event.id + event.endDate} className={styles.eventContainer}>
-                                        <p className={styles.date}>{dateFormatConverter(event.startDate)}</p>
-                                        <p className={styles.eventName}>{event.name}</p>
-                                        <p className={styles.groupName}>{event.Group.name}</p>
+                            <Link key={event.id + event.endDate + event.startDate} to={`/events/${event.id}`}>
+                                <div className={styles.event} key={event.id}>
+                                    <div className={styles.imgHolder} key={event.startDate}>
+                                        {
+                                            event.type === 'Online' && <div className={styles.online}><img src={onlineVideo} alt='online' width="18px" height="18px" />{" "}{scripts[currLanguage].OnlineEvent}</div>
+                                        }
+                                        {
+                                            event.previewImage ?
+                                                <img src={event.previewImage} style={{borderRadius: '4px'}} alt='preview' key={event.endDate} width='168px' onError={(e) => e.target.src = brokenLink} /> :
+                                                <Cats key={event.endDate} />
+                                        }
                                     </div>
-                                    <div key={event.id + event.numAttending.toString()} className={styles.numAttending}>
-                                        {event.numAttending}{scripts[currLanguage].Attendees}
+                                    <div key={event.id + event.startDate} className={styles.eventDesc}>
+                                        <div key={event.id + event.endDate} className={styles.eventContainer}>
+                                            <p className={styles.date}>{dateFormatConverter(event.startDate)}</p>
+                                            <p className={styles.eventName}>{event.name}</p>
+                                            <p className={styles.groupName}>{event.Group.name}</p>
+                                        </div>
+                                        <div key={event.id + event.numAttending.toString()} className={styles.numAttending}>
+                                            {event.numAttending}{scripts[currLanguage].Attendees}
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
+                            </Link>
                         )
                     }
                 </div>

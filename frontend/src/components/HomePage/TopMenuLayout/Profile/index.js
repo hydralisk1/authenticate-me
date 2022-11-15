@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { useSelector } from 'react-redux'
+import { Link } from 'react-router-dom'
 import scripts from './scripts'
 import styles from './profile.module.css'
 import downArrorw from '../../../../assets/angle_down_icon.svg'
@@ -27,7 +28,7 @@ const Profile = () => {
                         <li>{scripts[currLanguage].YourGroups}</li>
                         <li>{scripts[currLanguage].ViewProfile}</li>
                         <li>{scripts[currLanguage].Settings}</li>
-                        <li><a href='/logout'>{scripts[currLanguage].LogOut}</a></li>
+                        <li><Link to='/logout'>{scripts[currLanguage].LogOut}</Link></li>
                     </ul>
                 </div>}
         </div>

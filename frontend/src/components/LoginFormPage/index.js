@@ -1,5 +1,6 @@
 import { useSelector, useDispatch } from 'react-redux'
 import { useState, useEffect } from 'react'
+import { useHistory } from 'react-router-dom'
 import { signInUser } from '../../store/session'
 import { setModal } from '../../store/modal'
 import ModalError from '../ModalError'
@@ -10,6 +11,7 @@ import logoImg from '../../assets/m_swarm_128x128.png'
 
 const LoginFormPage = ({ currState }) => {
     const dispatch = useDispatch()
+    const history = useHistory()
     const currLanguage = useSelector(state => state.language)
     const [openLoginModal, setOpenLoginModal] = currState
     const [email, setEmail] = useState('')
@@ -61,6 +63,7 @@ const LoginFormPage = ({ currState }) => {
                     setEmailClicked(false)
                     setPasswordClicked(false)
                     closeLogin()
+                    history.push('/home')
                 }else{
                     setUnauthorized(true)
                     setTimeout(() => {setUnauthorized(false)}, 4000)

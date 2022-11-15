@@ -1,17 +1,21 @@
 import { signOutUser } from '../../store/session'
 import { useEffect } from 'react'
 import { useDispatch } from 'react-redux'
-import { Redirect } from 'react-router-dom'
+import { useHistory } from 'react-router-dom'
 
 const LogOut = () => {
     const dispatch = useDispatch()
+    const history = useHistory()
 
     useEffect(() => {
         dispatch(signOutUser())
-        localStorage.removeItem('userPersist')
-    }, [dispatch])
+            .then(() => {
+                history.push('/')
+                window.location.reload();
+            })
+    }, [dispatch, history])
 
-    return <Redirect to='/' />
+    return null
 }
 
 export default LogOut
