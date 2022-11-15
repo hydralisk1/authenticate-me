@@ -4,6 +4,7 @@ import { useSelector } from 'react-redux'
 import { useParams } from "react-router-dom"
 import styles from './eventdetail.module.css'
 import scripts from './scripts'
+import brokenLink from '../../../assets/broken-link.webp'
 
 const EventDetailBody = () => {
     const currLanguage = useSelector(state => state.language)
@@ -22,7 +23,7 @@ const EventDetailBody = () => {
                 <div className={styles.bodyContainer}>
                     <div className={`${styles.content} ${styles.body}`}>
                         <div className={styles.left}>
-                            { event.EventImages.map(image => <img key={image.id} src={image.url} alt='image' />)}
+                            { event.EventImages.map(image => <img key={image.id} src={image.url} alt='image' onError={(e) => e.target.src = brokenLink} />)}
                             <h2>{scripts[currLanguage].Details}</h2>
                             <p className={styles.desc}>{event.description}</p>
                             <h2>{`${scripts[currLanguage].Attendees} (${event.numAttending})`}</h2>
