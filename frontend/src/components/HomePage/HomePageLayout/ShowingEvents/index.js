@@ -27,8 +27,8 @@ const ShowingEvents = () => {
         month = Number(month) - 1
         const day = new Date(year, month, date).getDay()
 
-        resDateFormat += scripts[currLanguage].Day[day] + ', ' + scripts[currLanguage].Months[month] + ' ' + Number(date)
-        if(currLanguage === 'KR') resDateFormat += '일'
+        if(currLanguage === 'KR') resDateFormat += year + '년 ' + scripts[currLanguage].Months[month] + ' ' + Number(date) + '일 ' + scripts[currLanguage].Day[day]
+        else if(currLanguage === 'EN') resDateFormat += scripts[currLanguage].Day[day] + ', ' + scripts[currLanguage].Months[month] + ' ' + Number(date) + ', ' + year
         // ·
         hour = Number(hour)
         const ampm = Number(hour) >= 12 ? 'PM' : 'AM'
