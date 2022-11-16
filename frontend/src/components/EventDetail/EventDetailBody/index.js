@@ -2,6 +2,7 @@ import { csrfFetch } from '../../../store/csrf'
 import { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { useParams } from "react-router-dom"
+import { Link } from 'react-router-dom'
 import styles from './eventdetail.module.css'
 import scripts from './scripts'
 import brokenLink from '../../../assets/broken-link.webp'
@@ -15,19 +16,6 @@ const EventDetailBody = () => {
     const [areAttendeesLoaded, setAreAttendeesLoaded] = useState(false)
     const [event, setEvent] = useState({})
     const [attendees, setAttendees] = useState({})
-
-
-    // function initMap() {
-        // const location = {lat: event.Venue.lat, lng: event.Venue.lng }
-        // const map = new google.maps.Map(document.getElementById('map'), {
-        //     zoom: 4,
-        //     center: location
-        // })
-        // const marker = new google.maps.Marker({
-        //     position: location,
-        //     map: map
-        // })
-    // }
 
     const detailPage = () => {
         return (
@@ -59,10 +47,12 @@ const EventDetailBody = () => {
 
                         </div>
                         <div className={styles.right}>
-                            <div className={styles.fisrtRightContent}>
-                                <h3>{event.Group.name}</h3>
-                                <p className={styles.attendance}>{event.Group.private ? scripts[currLanguage].PrivateGroup : scripts[currLanguage].PublicGroup}</p>
-                            </div>
+                            <Link to={`/groups/${event.groupId}`}>
+                                <div className={styles.fisrtRightContent}>
+                                    <h3>{event.Group.name}</h3>
+                                    <p className={styles.attendance}>{event.Group.private ? scripts[currLanguage].PrivateGroup : scripts[currLanguage].PublicGroup}</p>
+                                </div>
+                            </Link>
                             <div className={styles.lastRightContent}>
                                 <div className={styles.timeAndPlace}>
                                     <div>

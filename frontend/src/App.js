@@ -9,12 +9,13 @@ import MainPage from './components/MainPage'
 import HomePage from './components/HomePage';
 import LogOut from './components/LogOut';
 import EventDetail from './components/EventDetail';
+import GroupDetail from './components/GroupDetail';
+import Footer from './components/Footer';
 
 function App() {
   const dispatch = useDispatch()
   const [isLoaded, setIsLoaded] = useState(false)
   const isLoggedIn = useSelector(state => state.session.isLoggedIn)
-  // const user = useSelector(state => state.session.user)
 
   useEffect(() => {
     const language = Cookies.get('language') || 'EN'
@@ -28,20 +29,26 @@ function App() {
   }, [dispatch])
 
   return (
-    <Switch>
-      <Route path='/events/:eventId'>
-        {isLoaded && (isLoggedIn ? <EventDetail /> : <Redirect to='/' />)}
-      </Route>
-      <Route path='/home'>
-        {isLoaded && (isLoggedIn ? <HomePage /> : <Redirect to='/' />)}
-      </Route>
-      <Route path='/logout'>
-        <LogOut />
-      </Route>
-      <Route exact path='/'>
-        {isLoaded && (isLoggedIn ? <Redirect to='/home' /> : <MainPage />)}
-      </Route>
-    </Switch>
+    <>
+      <Switch>
+        <Route path='/events/:eventId'>
+          {isLoaded && (isLoggedIn ? <EventDetail /> : <Redirect to='/' />)}
+        </Route>
+        <Route path='/groups/:groupId'>
+          {isLoaded && (isLoggedIn ? <GroupDetail /> : <Redirect to='/' />)}
+        </Route>
+        <Route path='/home'>
+          {isLoaded && (isLoggedIn ? <HomePage /> : <Redirect to='/' />)}
+        </Route>
+        <Route path='/logout'>
+          <LogOut />
+        </Route>
+        <Route exact path='/'>
+          {isLoaded && (isLoggedIn ? <Redirect to='/home' /> : <MainPage />)}
+        </Route>
+      </Switch>
+      <Footer />
+    </>
   );
 }
 

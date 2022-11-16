@@ -1,0 +1,78 @@
+.container {
+    width: 100%;
+    background-color: rgb(55, 62, 71);
+    color: white;
+    padding: 1rem 0;
+}
+
+.bottomContainer {
+    width: 100%;
+    background-color: rgb(48, 54, 62);
+    color: white;
+}
+
+.createGroup {
+    padding: 0.5rem 1rem;
+    background-color: transparent;
+    color: white;
+    border: 2px solid white;
+    border-radius: 4px;
+    margin-left: 2rem;
+    cursor: pointer;
+}
+
+.upperContainer {
+    width: 1120px;
+    margin: 0 auto;
+}
+
+.groupStart {
+    border-bottom: solid 1px darkgray;
+    padding: 1rem 0;
+    margin-bottom: 2rem;
+}
+
+.footerMenu {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+}
+
+.menu {
+    list-style: none;
+}
+
+.menu > li {
+    padding: 6px 0;
+}
+
+.menu > li:first-child {
+    font-weight: 700;
+}
+
+.menu > li:not(:first-child){
+    cursor: pointer;
+    font-size: 0.875rem
+}
+
+.menu > li:not(:first-child):hover {
+    color: darkgray;
+}
+
+.bottomMenu {
+    width: 1120px;
+    margin: 0 auto;
+    padding: 1rem 0;
+    display: flex;
+    list-style: none;
+    align-items: center;
+}
+
+.bottomMenu > li:not(:first-child) {
+    cursor: pointer;
+    margin-left: 3rem;
+    font-size: 0.875rem;
+}
+
+.bottomMenu > li:not(:first-child):hover {
+    color: darkgray;
+}
