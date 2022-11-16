@@ -55,7 +55,7 @@ h1 {
 .groupDetailContainer {
     width: 100%;
     background-color: rgb(246, 247, 248);
-    margin-bottom: 2rem;
+    padding-bottom: 2rem;
 }
 
 .groupDetail {
