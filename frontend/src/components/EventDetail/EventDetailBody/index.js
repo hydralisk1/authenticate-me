@@ -79,7 +79,7 @@ const EventDetailBody = () => {
                                     <div>{`${event.Venue.address} · ${event.Venue.city}, ${event.Venue.state}`}</div>
                                 </div>
                             </div>
-                            <Maps lat={event.Venue.lat} lng={event.Venue.lng} />
+                            <Maps lat={parseFloat(event.Venue.lat)} lng={parseFloat(event.Venue.lng)} />
                         </div>
                     </div>
                 </div>
