@@ -16,7 +16,7 @@ const MapComponent = ({ lat, lng }) => {
             map,
             clickable: false
         })
-    })
+    }, [lat, lng])
 
     return <div style={{minHeight: '200px'}} ref={ref} id='map' />
 }
