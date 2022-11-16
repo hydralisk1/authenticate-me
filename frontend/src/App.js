@@ -10,7 +10,7 @@ import HomePage from './components/HomePage';
 import LogOut from './components/LogOut';
 import EventDetail from './components/EventDetail';
 import GroupDetail from './components/GroupDetail';
-import Footer from './components/Footer';
+import CreateGroup from './components/CreateGroup';
 
 function App() {
   const dispatch = useDispatch()
@@ -34,6 +34,9 @@ function App() {
         <Route path='/events/:eventId'>
           {isLoaded && (isLoggedIn ? <EventDetail /> : <Redirect to='/' />)}
         </Route>
+        <Route exact path='/groups/new'>
+          {isLoaded && (isLoggedIn ? <CreateGroup /> : <Redirect to='/' />)}
+        </Route>
         <Route path='/groups/:groupId'>
           {isLoaded && (isLoggedIn ? <GroupDetail /> : <Redirect to='/' />)}
         </Route>
@@ -47,7 +50,6 @@ function App() {
           {isLoaded && (isLoggedIn ? <Redirect to='/home' /> : <MainPage />)}
         </Route>
       </Switch>
-      <Footer />
     </>
   );
 }

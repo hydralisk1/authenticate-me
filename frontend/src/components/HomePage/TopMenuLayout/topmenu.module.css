@@ -19,3 +19,14 @@
     width: 700px;
     justify-content: space-between;
 }
+
+.rightSide {
+    display: flex;
+    align-items: center;
+}
+
+span {
+    margin-right: 2rem;
+    font-weight: 500;
+    color: #388092;
+}
