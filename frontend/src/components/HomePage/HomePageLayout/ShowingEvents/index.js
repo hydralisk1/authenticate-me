@@ -7,6 +7,7 @@ import styles from './showevents.module.css'
 import scripts from './scripts'
 import brokenLink from '../../../../assets/broken-link.webp'
 import onlineVideo from '../../../../assets/video.svg'
+import { dateFormatConverter } from '../../../../util/timeConverter'
 
 const ShowingEvents = () => {
     const [shownMonth, setShownMonth] = useState(new Date())
@@ -18,27 +19,6 @@ const ShowingEvents = () => {
         const month = previous ? shownMonth.getMonth() - 1 : shownMonth.getMonth() + 1
 
         setShownMonth(new Date(year, month, 1))
-    }
-
-    const dateFormatConverter = dateString => {
-        let resDateFormat = ""
-        const [dateformat, time] = dateString.split('T')
-        let [hour, minute] = time.split(':')
-        let [year, month, date] = dateformat.split('-')
-        month = Number(month) - 1
-        const day = new Date(year, month, date).getDay()
-
-        if(currLanguage === 'KR') resDateFormat += year + '년 ' + scripts[currLanguage].Months[month] + ' ' + Number(date) + '일 ' + scripts[currLanguage].Day[day]
-        else if(currLanguage === 'EN') resDateFormat += scripts[currLanguage].Day[day] + ', ' + scripts[currLanguage].Months[month] + ' ' + Number(date) + ', ' + year
-        // ·
-        hour = Number(hour)
-        const ampm = Number(hour) >= 12 ? 'PM' : 'AM'
-        if(hour === 0) hour = 12
-        else if(hour > 12) hour = Number(hour) - 12
-
-        resDateFormat += ' · ' + Number(hour) + ':' + minute + ' ' + ampm
-
-        return resDateFormat
     }
 
     const getEvents = () => {
@@ -146,7 +126,7 @@ const ShowingEvents = () => {
                                     </div>
                                     <div key={event.id + event.startDate} className={styles.eventDesc}>
                                         <div key={event.id + event.endDate} className={styles.eventContainer}>
-                                            <p className={styles.date}>{dateFormatConverter(event.startDate)}</p>
+                                            <p className={styles.date}>{dateFormatConverter(event.startDate, currLanguage)}</p>
                                             <p className={styles.eventName}>{event.name}</p>
                                             <p className={styles.groupName}>{event.Group.name}</p>
                                         </div>
