@@ -255,7 +255,7 @@ const GroupSettingBody = () => {
         isLoaded ?
         <div className={styles.container}>
             <div className={styles.titleContainer}>
-                <h1>{scripts[currLanguage].GroupSettings}</h1>
+                <h1 className={styles.groupSettingTitle}>{scripts[currLanguage].GroupSettings}</h1>
                 <div className={styles.buttonContainer}>
                 {modified ?
                     <>

@@ -88,11 +88,12 @@ textarea {
     margin-bottom: 2rem;
 }
 
-h1 {
+.groupSettingTitle {
     display: flex;
     align-items: center;
     padding: 0;
     margin: 0;
+    font-size: 2rem;
 }
 
 .disabled {
