@@ -47,10 +47,40 @@ h1 {
     background-color: #f76a65;
 }
 
-.joinButton:disabled {
-    background-color: rgb(200, 200, 200);
-    color: darkgray
+.leaveButton {
+    width: 200px;
+    height: 50px;
+    border-radius: 8px;
+    background-color: darkgray;
+    border: none;
+    cursor: pointer;
+    color: white;
+    font-weight: 500;
+    font-size: 1.25rem;
+    transition: background-color 0.5s;
 }
+
+.leaveButton:hover {
+    background-color: #c8c8c8;
+}
+
+.settingButton {
+    width: 200px;
+    height: 50px;
+    border-radius: 8px;
+    background-color: #388092;
+    border: none;
+    cursor: pointer;
+    color: white;
+    font-weight: 500;
+    font-size: 1.25rem;
+    transition: background-color 0.5s;
+}
+
+.settingButton:hover {
+    background-color: #4198ae;
+}
+
 
 .groupDetailContainer {
     width: 100%;

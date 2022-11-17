@@ -7,7 +7,8 @@ const scripts = {
         PublicGroup: 'Public group',
         Organized: 'Organized by ',
         JoinThisGroup: 'Join this group',
-        YouReMember: 'You\'re a member',
+        YouReMember: 'Leave this group',
+        GroupSetting: 'Setting Group',
         WhatWe: 'What we\'re about',
     },
     KR: {
@@ -18,7 +19,8 @@ const scripts = {
         PublicGroup: '공개 그룹',
         Organized: '개설자 ',
         JoinThisGroup: '그룹 가입하기',
-        YouReMember: '가입된 그룹',
+        YouReMember: '그룹 탈퇴',
+        GroupSetting: '그룹 설정',
         WhatWe: '우리는 이런 모임입니다',
     },
 }

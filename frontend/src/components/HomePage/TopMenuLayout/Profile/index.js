@@ -25,7 +25,7 @@ const Profile = () => {
                 <div className={styles.menu}>
                     <ul>
                         <li>{scripts[currLanguage].YourEvents}</li>
-                        <li>{scripts[currLanguage].YourGroups}</li>
+                        <li><Link to='/groups'>{scripts[currLanguage].YourGroups}</Link></li>
                         <li>{scripts[currLanguage].ViewProfile}</li>
                         <li>{scripts[currLanguage].Settings}</li>
                         <li><Link to='/logout'>{scripts[currLanguage].LogOut}</Link></li>

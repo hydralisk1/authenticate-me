@@ -1,30 +1,60 @@
 import { csrfFetch } from '../../../store/csrf'
+import { joinGroup, leaveGroup } from '../../../store/session'
 import { useEffect, useState } from 'react'
-import { useParams } from "react-router-dom"
-import { useSelector } from 'react-redux'
+import { useHistory, useParams } from "react-router-dom"
+import { useSelector, useDispatch } from 'react-redux'
 import Cats from '../../HomePage/HomePageLayout/ShowingEvents/Cats'
 import scripts from './scripts'
 import styles from './groupdetail.module.css'
 import brokenLink from '../../../assets/broken-link.webp'
 
 const GroupDetail = () => {
+    const history = useHistory()
     const { groupId } = useParams()
+    const dispatch = useDispatch()
     const [isLoaded, setIsLoaded] = useState(false)
-    const [isMemberLoaded, setIsMemberLoaded] = useState(false)
-    const [isJoined, setIsJoined] = useState(false)
+    const [isJoined, setIsJoined] = useState(0) // 0: not joined, 1: member, 2: organizer
     const [group, setGroup] = useState({})
     const currLanguage = useSelector(state => state.language)
+    const groups = useSelector(state => state.session.groups)
     const user = useSelector(state => state.session.user)
 
-    const joinRequest = () => {
-        csrfFetch(`/api/groups/${groupId}/membership`, { method: 'POST' })
-            .then(res => res.json())
+    useEffect(() => {
+        csrfFetch(`/api/groups/${groupId}`)
             .then(res => {
-                if(res.statusCode) window.alert(res.message)
+                if(res.status < 400) return res.json()
+                else {
+                    window.alert('Group couldn\'t be found')
+                    history.goBack()
+                }
+            })
+            .then(res => {
+                if(groups.organized.includes(res.id)) setIsJoined(2)
+                else if (groups.joined.includes(res.id)) setIsJoined(1)
+                setGroup(res)
+                setIsLoaded(true)
+            })
+    }, [groupId, groups, history])
+
+    const joinRequest = () => {
+        dispatch(joinGroup(groupId))
+            .then(res => {
+                if(!res) window.alert('Failed')
                 else{
                     window.alert('Successfully requested')
-                    setIsJoined(true)
+                    setIsJoined(1)
                 }
+            })
+    }
+
+    const leaveThisGroup = () => {
+        const body = {memberId: user.id,}
+        dispatch(leaveGroup(groupId, body))
+            .then(res => {
+                if(res){
+                    setIsJoined(0)
+                    window.alert('Success')
+                }else window.alert('failed')
             })
     }
 
@@ -71,12 +101,22 @@ const GroupDetail = () => {
                             </div>
                         </div>
                         <div className={styles.joinButtonContainer}>
-                        { isMemberLoaded ?
-                            <button className={styles.joinButton} disabled={isJoined} onClick={joinRequest}>
-                                {isJoined ? scripts[currLanguage].YouReMember : scripts[currLanguage].JoinThisGroup}
-                            </button> :
-                            'Loading...'
+                        {
+                            isJoined === 2 ?
+                                <button className={styles.settingButton}>
+                                    {scripts[currLanguage].GroupSetting}
+                                </button> :
+                            isJoined === 1 ?
+                                <button className={styles.leaveButton} onClick={leaveThisGroup}>
+                                    {scripts[currLanguage].YouReMember}
+                                </button> :
+                                <button className={styles.joinButton} onClick={joinRequest}>
+                                    {scripts[currLanguage].JoinThisGroup}
+                                </button>
                         }
+
+
+
                         </div>
                     </div>
                 </div>
@@ -90,21 +130,6 @@ const GroupDetail = () => {
         )
     }
 
-    useEffect(() => {
-        csrfFetch('/api/groups/' + groupId)
-            .then(res => res.json())
-            .then(res => {
-                setGroup(res);
-                setIsLoaded(true);
-
-                csrfFetch('/api/groups/current')
-                    .then(response => response.json())
-                    .then(response => {
-                        response.Groups.length ? setIsJoined(response.Groups.some(g => g.id.toString() === groupId) || user.id === res.Organizer.id) : setIsJoined(false)
-                        setIsMemberLoaded(true)
-                    })
-            })
-    }, [groupId, user.id])
     return isLoaded ?
         detailPage() :
         'Loading...'

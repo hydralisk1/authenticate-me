@@ -1,13 +1,14 @@
-import { csrfFetch } from '../../../store/csrf'
 import { useEffect, useState } from 'react'
-import { useSelector } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
 import { useHistory } from 'react-router-dom'
+import { organizeGroup } from '../../../store/session'
 import styles from './creategroup.module.css'
 import scripts from './scripts'
 
 
 const CreateGroupBody = () => {
     const history = useHistory()
+    const dispatch = useDispatch()
     const currLanguage = useSelector(state => state.language)
     const maxNumGroupName = 60
     const [currentStep, setCurrentStep] = useState(1)
@@ -115,17 +116,13 @@ const CreateGroupBody = () => {
             state: location.state
         }
 
-        csrfFetch('/api/groups', {
-            method: 'POST',
-            headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify(body)
-        })
-        .then(res => {
-            if(res.status === 201) {
-                window.alert(scripts[currLanguage].Success)
-                history.push('/home')
-            }else window.alert(scripts[currLanguage].Failed)
-        })
+        dispatch(organizeGroup(body))
+            .then(gId => {
+                if(gId > -1) {
+                    window.alert('Success')
+                    history.push(`/groups/${gId}`)
+                }else window.alert('Failed')
+            })
 
     }
 
