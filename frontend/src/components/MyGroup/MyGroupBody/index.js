@@ -80,7 +80,7 @@ const MyGroupBody = () => {
                 <div><Link to='/home'>{scripts[currLanguage].BackToHome}</Link></div>
             </div>
             <div>
-                <h1>{scripts[currLanguage].YourGroups}</h1>
+                <h1 className={styles.yourGroups}>{scripts[currLanguage].YourGroups}</h1>
                 {groupView()}
             </div>
         </div> : 'Loading...'
