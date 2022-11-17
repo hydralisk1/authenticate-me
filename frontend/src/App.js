@@ -14,6 +14,7 @@ import CreateGroup from './components/CreateGroup';
 import MyGroup from './components/MyGroup';
 import GroupSetting from './components/GroupSetting'
 import GroupRemove from './components/GroupRemove';
+import EventSetting from './components/EventSetting';
 
 function App() {
   const dispatch = useDispatch()
@@ -48,6 +49,9 @@ function App() {
         </Route>
         <Route exact path='/groups/new'>
           {isLoaded && (isLoggedIn ? <CreateGroup /> : <Redirect to='/' />)}
+        </Route>
+        <Route path='/groups/:groupId/events'>
+          {isLoaded && (isLoggedIn ? <EventSetting /> : <Redirect to='/' />)}
         </Route>
         <Route path = '/groups/:groupId/close'>
           {isLoaded && (isLoggedIn ? <GroupRemove /> : <Redirect to='/' />)}

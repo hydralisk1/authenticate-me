@@ -48,7 +48,7 @@ const GroupSettingBody = () => {
     const [venueInput, setVenueInput] = useState(false)
     const [groupImageInput, setGroupImageInput] = useState(false)
 
-    const [createEvent, setCreateEvent] = useState()
+    // const [createEvent, setCreateEvent] = useState()
 
     useEffect(() => {
         if(!groups.organized.includes(Number(groupId))){
@@ -75,7 +75,7 @@ const GroupSettingBody = () => {
                 setStateL(res.state)
                 setGroupImages(res.GroupImages)
                 setVenues(res.Venues)
-                setCreateEvent(!!venues.length)
+                // setCreateEvent(!!venues.length)
                 setOriginal(res)
                 setIsLoaded(true)
             })

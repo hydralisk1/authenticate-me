@@ -131,7 +131,7 @@ const CreateGroupBody = () => {
             case 1:
                 return (
                     <div className={styles.body}>
-                        <h1>{scripts[currLanguage].First}</h1>
+                        <h1 style={{fontSize: '2rem'}}>{scripts[currLanguage].First}</h1>
                         <p>{scripts[currLanguage].MannamGroups}</p>
                         <div className={styles.location}>
                             <div className={styles.address}>{`${location.city}, ${location.state}, ${location.country}`}</div>
@@ -142,7 +142,7 @@ const CreateGroupBody = () => {
             case 2:
                 return (
                     <div className={styles.body}>
-                        <h1>{scripts[currLanguage].WhatWill}</h1>
+                        <h1 style={{fontSize: '2rem'}}>{scripts[currLanguage].WhatWill}</h1>
                         <p>{scripts[currLanguage].ChooseName}</p>
                         <div className={styles.groupName}>
                             <input
@@ -164,7 +164,7 @@ const CreateGroupBody = () => {
             case 3:
                 return (
                     <div className={styles.body}>
-                        <h1>{scripts[currLanguage].NowDescribe}{` ${groupName}`}{scripts[currLanguage].WillBeAbout}</h1>
+                        <h1 style={{fontSize: '2rem'}}>{scripts[currLanguage].NowDescribe}{` ${groupName}`}{scripts[currLanguage].WillBeAbout}</h1>
                         <p>{scripts[currLanguage].PeopleWill}</p>
                         <ol>
                             <li>{scripts[currLanguage].WhatPurpose}</li>
@@ -186,7 +186,7 @@ const CreateGroupBody = () => {
             case 4:
                 return (
                     <div className={styles.body}>
-                        <h1>{scripts[currLanguage].AlmostDone}</h1>
+                        <h1 style={{fontSize: '2rem'}}>{scripts[currLanguage].AlmostDone}</h1>
                         <div className={styles.chooseOne}>
                             <div id='public' className={!isPrivate ? styles.chosen : ''} onClick={() => setIsPrivate(false)}>
                                 {scripts[currLanguage].Public}

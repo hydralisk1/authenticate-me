@@ -62,6 +62,10 @@ const GroupDetail = () => {
         history.push(`/groups/${groupId}/settings`)
     }
 
+    const createEvent = () => {
+        history.push(`/groups/${groupId}/events`)
+    }
+
     const detailPage = () => {
         return (
             <>
@@ -107,9 +111,15 @@ const GroupDetail = () => {
                         <div className={styles.joinButtonContainer}>
                         {
                             isJoined === 2 ?
-                                <button className={styles.settingButton} onClick={settingGroup}>
-                                    {scripts[currLanguage].GroupSetting}
-                                </button> :
+                                <>
+                                    <button className={styles.settingButton} onClick={settingGroup}>
+                                        {scripts[currLanguage].GroupSetting}
+                                    </button>
+                                    <button className={styles.createEventButton} onClick={createEvent}>
+                                        {scripts[currLanguage].CreateEvent}
+                                    </button>
+                                </>
+                                :
                             isJoined === 1 ?
                                 <button className={styles.leaveButton} onClick={leaveThisGroup}>
                                     {scripts[currLanguage].YouReMember}

@@ -501,7 +501,7 @@ router.get('/current', requireAuth, async (req, res, next) => {
             },{
                 model: GroupImage,
                 attributes: ['url'],
-                where: { preview: "true" },
+                where: { preview: true },
                 required: false,
             }],
         },{
@@ -512,7 +512,7 @@ router.get('/current', requireAuth, async (req, res, next) => {
                 as: 'Members',
             },{
                 model: GroupImage,
-                where: { preview: "true" },
+                where: { preview: true },
                 required: false,
             }],
         }],
