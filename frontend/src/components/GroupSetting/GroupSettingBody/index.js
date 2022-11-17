@@ -1,14 +1,14 @@
 import { csrfFetch } from "../../../store/csrf"
-import { useSelector, useDispatch } from "react-redux"
+import { useSelector } from "react-redux"
 import { useEffect, useState } from "react"
 import { useHistory, useParams, Link } from "react-router-dom"
+import Maps from "../../Maps"
 
 import scripts from './scripts'
 import styles from './groupsettingbody.module.css'
 import brokenLink from '../../../assets/broken-link.webp'
 
 const GroupSettingBody = () => {
-    const dispatch = useDispatch()
     const user = useSelector(state => state.session.user)
     const groups = useSelector(state => state.session.groups)
     const currLanguage = useSelector(state => state.language)
@@ -114,17 +114,6 @@ const GroupSettingBody = () => {
         else setStateVenueError('')
     }, [address, cityVenue, stateVenue, currLanguage])
 
-    // const closeGroup = () => {
-    //     dispatch(removeGroup(groupId))
-    //         .then(() => {
-    //             // window.alert('Successfully removed')
-    //             history.push('/home')
-    //         })
-    //         .catch(() => {
-    //             window.alert('Something went wrong')
-    //         })
-    // }
-
     const groupSave = () => {
         if(!nameError.length && !descError.length){
             const body = {
@@ -188,56 +177,66 @@ const GroupSettingBody = () => {
 
             fetch(url)
                 .then(res => {
-                    if(res.status === 'OK') {
-                        const body = {
-                            lat: res.results[0].geometry.location.lat,
-                            lng: res.results[0].geometry.location.lng,
+                    if(res.status < 400) return res.json()
+                    else throw new Error()
+                })
+                .then(res => {
+                    const body = {
+                        lat: res.results[0].geometry.location.lat,
+                        lng: res.results[0].geometry.location.lng,
+                        groupId: Number(groupId)
+                    }
+
+                    let addr = ''
+
+                    res.results[0].address_components.forEach(d => {
+                        switch(d.types[0]){
+                            case 'street_number':
+                                addr += d.short_name + ' '
+                                break
+                            case 'route':
+                                addr += d.short_name
+                                break
+                            case 'locality':
+                                body.city = d.short_name
+                                break
+                            case 'administrative_area_level_1':
+                                body.state = d.short_name
+                                break
+                            default:
+                                break
                         }
+                    })
 
-                        let addr = ''
+                    body.address = addr
 
-                        res.results[0].address_components.forEach(d => {
-                            switch(d.types[0]){
-                                case 'street_number':
-                                    addr += d.short_name + ' '
-                                    break
-                                case 'route':
-                                    addr += d.short_name
-                                    break
-                                case 'locality':
-                                    body.city = d.short_name
-                                    break
-                                case 'administrative_area_level_1':
-                                    body.state = d.short_name
-                                    break
-                                default:
-                                    break
-                            }
-                        })
-
-                        body.address = addr
-
-                        csrfFetch(`/api/groups/${groupId}/venues`, {
-                            method: 'POST',
-                            headers: {'Content-Type': 'application/json'},
-                            body: JSON.stringify(body)
-                        })
-                        .then(res => {
-                            if(res.status < 400){
-                                return res.json()
-                            }
-                            throw new Error()
-                        })
-                        .then(res => {
-                            setVenues([...venues, res])
-                            setVenueInput(false)
-                            window.alert(scripts[currLanguage].Success)
-                        })
-                        .catch(() => {window.alert(scripts[currLanguage].Failed)})
-                    }else throw new Error()
+                    csrfFetch(`/api/groups/${groupId}/venues`, {
+                        method: 'POST',
+                        headers: {'Content-Type': 'application/json'},
+                        body: JSON.stringify(body)
+                    })
+                    .then(res => {
+                        if(res.status < 400){
+                            return res.json()
+                        }
+                        throw new Error()
+                    })
+                    .then(res => {
+                        setVenues([...venues, res])
+                        setVenueInput(false)
+                        setAddress('')
+                        setCityVenue('')
+                        setStateVenue('')
+                        window.alert(scripts[currLanguage].Success)
+                    })
+                    .catch(() => {window.alert(scripts[currLanguage].Failed)})
                 })
                 .catch(() => {window.alert(scripts[currLanguage].Failed)})
         }
+    }
+
+    const removeVenue = (vId) => {
+
     }
 
     const removeImage = (gId) => {
@@ -370,8 +369,58 @@ const GroupSettingBody = () => {
                     <div className={styles.groupImageAdd} onClick={() => setGroupImageInput(false)}>{scripts[currLanguage].CancelAddImage}</div> :
                     <div className={styles.groupImageAdd} onClick={() => setGroupImageInput(true)}>{scripts[currLanguage].AddGroupImage}</div>
                 }
-
             </div>
+            <div>
+                <h2>{scripts[currLanguage].Venue}</h2>
+                {/* {!!forTest.length && */}
+                {!!venues.length &&
+                    <div className={styles.venueMapContainer}>
+                        {venues.map((v, i) => (
+                        // {forTest.map((v, i) => (
+                            <div key={v.id} className={styles.mapContainer}>
+                                <div key={v.id + v.lng}>
+                                    <Maps key={v.lat.toString() + v.lng.toString()} lat={parseFloat(v.lat)} lng={parseFloat(v.lng)} />
+                                    <div key={v.lng + v.lat} className={styles.mapAddress}>{`${v.address}, ${v.city}`}</div>
+                                    <div key={v.id.toString() + i} className={styles.imageRemove} onClick={() => removeVenue(v.id)}>{scripts[currLanguage].Remove}</div>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                }
+                { venueInput &&
+                    <div className={styles.imageInputContainer}>
+                        <div style={{width: '600px'}}>
+                            <input
+                                type='text'
+                                value={address}
+                                className={styles.imageInput}
+                                onChange={e => setAddress(e.target.value)}
+                                placeholder='Street'
+                            />
+                            <input
+                                type='text'
+                                value={cityVenue}
+                                className={styles.imageInput}
+                                onChange={e => setCityVenue(e.target.value)}
+                                placeholder='City'
+                            />
+                            <input
+                                type='text'
+                                value={stateVenue}
+                                className={styles.imageInput}
+                                onChange={e => setStateVenue(e.target.value)}
+                                placeholder='State'
+                            />
+                        </div>
+                        <button className={styles.add} onClick={addVenue}>{scripts[currLanguage].Add}</button>
+                    </div>
+                }
+                { venueInput ?
+                    <div className={styles.groupImageAdd} onClick={() => setVenueInput(false)}>{scripts[currLanguage].CancelAddVenue}</div> :
+                    <div className={styles.groupImageAdd} onClick={() => setVenueInput(true)}>{scripts[currLanguage].AddVenue}</div>
+                }
+            </div>
+
         </div>
         : 'Loading...'
     )

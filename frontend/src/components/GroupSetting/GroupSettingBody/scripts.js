@@ -25,6 +25,9 @@ const scripts = {
         CancelAddImage: '- Cancel adding a group image',
         Add: '+ Add',
         CloseGroup: 'Close This Group',
+        Venue: 'Venues',
+        AddVenue: '+ Add a venue',
+        CancelAddVenue: '- Cancel adding a venue'
     },
     KR: {
         Required: '필수입니다',
@@ -52,6 +55,9 @@ const scripts = {
         CancelAddImage: '- 그룹 사진 추가 취소',
         Add: '추가',
         CloseGroup: '이 그룹 폐쇄',
+        Venue: '이벤트 장소',
+        AddVenue: '+ 이벤트 장소 추가',
+        CancelAddVenue: '- 이벤트 장소 추가 취소'
     },
 }
 
