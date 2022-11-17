@@ -12,6 +12,8 @@ import EventDetail from './components/EventDetail';
 import GroupDetail from './components/GroupDetail';
 import CreateGroup from './components/CreateGroup';
 import MyGroup from './components/MyGroup';
+import GroupSetting from './components/GroupSetting'
+import GroupRemove from './components/GroupRemove';
 
 function App() {
   const dispatch = useDispatch()
@@ -31,7 +33,6 @@ function App() {
   }, [dispatch])
 
   useEffect(() => {
-
     if(isLoggedIn){
       const groups = Cookies.get('groups')
       if(groups === undefined) dispatch(getMyGroups(user.id))
@@ -47,6 +48,12 @@ function App() {
         </Route>
         <Route exact path='/groups/new'>
           {isLoaded && (isLoggedIn ? <CreateGroup /> : <Redirect to='/' />)}
+        </Route>
+        <Route path = '/groups/:groupId/close'>
+          {isLoaded && (isLoggedIn ? <GroupRemove /> : <Redirect to='/' />)}
+        </Route>
+        <Route path = '/groups/:groupId/settings'>
+        {isLoaded && (isLoggedIn ? <GroupSetting /> : <Redirect to='/' />)}
         </Route>
         <Route path='/groups/:groupId'>
           {isLoaded && (isLoggedIn ? <GroupDetail /> : <Redirect to='/' />)}

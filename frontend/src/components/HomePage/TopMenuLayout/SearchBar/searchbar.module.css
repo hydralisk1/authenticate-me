@@ -1,4 +1,4 @@
-.input {
+.searchBar {
     width: 210px;
     height: 42px;
     padding: 8px 16px;
@@ -6,11 +6,11 @@
     margin-right: -1px;
 }
 
-.input:hover, .input:focus {
+.searchBar:hover, .searchBar:focus {
     border: 1px solid black;
 }
 
-.input:focus {
+.searchBar:focus {
     outline: none;
 }
 

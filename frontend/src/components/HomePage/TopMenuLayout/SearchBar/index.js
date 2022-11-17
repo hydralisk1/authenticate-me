@@ -9,11 +9,11 @@ const SearchBar = () => {
         <form onSubmit={handleSubmit} className={styles.form}>
             <input
                 type='text'
-                className={styles.input}
+                className={styles.searchBar}
             />
             <input
                 type='text'
-                className={styles.input}
+                className={styles.searchBar}
             />
             <button className={styles.submitButton} type='submit'><img src={searchIcon} alt='search' /></button>
         </form>

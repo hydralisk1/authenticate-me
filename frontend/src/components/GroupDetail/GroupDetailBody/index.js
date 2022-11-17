@@ -58,6 +58,10 @@ const GroupDetail = () => {
             })
     }
 
+    const settingGroup = () => {
+        history.push(`/groups/${groupId}/settings`)
+    }
+
     const detailPage = () => {
         return (
             <>
@@ -70,7 +74,7 @@ const GroupDetail = () => {
                         }
                     </div>
                     <div>
-                        <h1>{group.name}</h1>
+                        <h1 className={styles.title}>{group.name}</h1>
                         <div className={styles.groupInfo}>
                             <div>
                                 <svg viewBox="0 0 16 16" id="icon-location-pin--small" width="100%" height="100%">
@@ -103,7 +107,7 @@ const GroupDetail = () => {
                         <div className={styles.joinButtonContainer}>
                         {
                             isJoined === 2 ?
-                                <button className={styles.settingButton}>
+                                <button className={styles.settingButton} onClick={settingGroup}>
                                     {scripts[currLanguage].GroupSetting}
                                 </button> :
                             isJoined === 1 ?
@@ -114,9 +118,6 @@ const GroupDetail = () => {
                                     {scripts[currLanguage].JoinThisGroup}
                                 </button>
                         }
-
-
-
                         </div>
                     </div>
                 </div>

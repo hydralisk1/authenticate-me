@@ -204,9 +204,10 @@ const sessionReducer = (state = initialState, action) => {
 
         case REMOVE_GROUP:
             const newGroups = {...state.groups}
+            const groupId = Number(action.groupId)
 
-            if(action.joined) newGroups.joined = newGroups.joined.filter(id => id !== action.groupId)
-            else newGroups.organized = newGroups.organized.filter(id => id !== action.groupId)
+            if(action.joined) newGroups.joined = newGroups.joined.filter(id => id !== groupId)
+            else newGroups.organized = newGroups.organized.filter(id => id !== groupId)
 
             Cookies.set('groups', JSON.stringify(newGroups))
             return {...state, groups: newGroups}
