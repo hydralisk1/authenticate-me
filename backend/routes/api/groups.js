@@ -97,7 +97,8 @@ router.get('/:groupId/events', async (req, res, next) => {
             attributes: ['id', 'name', 'city', 'state']
         },{
             model: Venue,
-            attributes: ['id', 'city', 'state']
+            attributes: ['id', 'city', 'state'],
+            required: false
         },{
             model: User,
         },{
