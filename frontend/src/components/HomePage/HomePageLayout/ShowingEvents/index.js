@@ -12,6 +12,7 @@ import { dateFormatConverter } from '../../../../util/timeConverter'
 const ShowingEvents = () => {
     const [shownMonth, setShownMonth] = useState(new Date())
     const currLanguage = useSelector(state => state.language)
+    const [isLoaded, setIsLoaded] = useState(false)
     const [events, setEvents] = useState([])
 
     const changeMonth = (previous = false) => {
@@ -27,26 +28,31 @@ const ShowingEvents = () => {
             .then(result => {
                 // filtering outdated events
                 // for test, not filtering outdated events
-                const availableEvents = result.Events.filter(event => {
-                    const [year, month, date] = event.startDate.split('T')[0].split('-')
-                    const thisYear = new Date().getFullYear()
-                    const thisMonth = new Date().getMonth()
-                    const thisDate = new Date().getDate()
+                if(result.Events.length){
+                    const availableEvents = result.Events.filter(event => {
+                        const [year, month, date] = event.startDate.split('T')[0].split('-')
+                        const thisYear = new Date().getFullYear()
+                        const thisMonth = new Date().getMonth()
+                        const thisDate = new Date().getDate()
 
-                    return new Date(year, month, date).getTime() >= new Date(thisYear, thisMonth + 1, thisDate).getTime()
-                }).sort((a, b) => {
-                    const [aYear, aMonth, aDate] = a.startDate.split('T')[0].split('-')
-                    const [bYear, bMonth, bDate] = b.startDate.split('T')[0].split('-')
+                        return new Date(year, month, date).getTime() >= new Date(thisYear, thisMonth + 1, thisDate).getTime()
+                    }).sort((a, b) => {
+                        const [aYear, aMonth, aDate] = a.startDate.split('T')[0].split('-')
+                        const [bYear, bMonth, bDate] = b.startDate.split('T')[0].split('-')
 
-                    return new Date(aYear, aMonth, aDate).getTime() - new Date(bYear, bMonth, bDate).getTime()
-                })
+                        return new Date(aYear, aMonth, aDate).getTime() - new Date(bYear, bMonth, bDate).getTime()
+                    })
 
-                if(!availableEvents.length) setEvents([scripts[currLanguage].NoEvent])
-                else setEvents(availableEvents)
-
+                    if(!availableEvents.length) setEvents([scripts[currLanguage].NoEvent])
+                    else setEvents(availableEvents)
+                }else setEvents([scripts[currLanguage].NoEvent])
+                setIsLoaded(true)
                 // setEvents(result.Events) // for test
             })
-            .catch(() => setEvents([scripts[currLanguage].FailedLoading]))
+            .catch(() => {
+                setEvents([scripts[currLanguage].FailedLoading])
+                setIsLoaded(true)
+            })
     }
 
     const calendar = (shownMonth) => {
@@ -109,7 +115,7 @@ const ShowingEvents = () => {
                     <div className={styles.yourInterests}></div>
                 </div>
                 <div className={styles.right}>
-                    {events.length === 0 ?
+                    {isLoaded ?
                         'Loading' :
                         events.map(event =>
                             <Link key={event.id + event.endDate + event.startDate} to={`/events/${event.id}`}>
