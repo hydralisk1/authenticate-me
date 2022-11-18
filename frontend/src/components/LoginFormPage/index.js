@@ -40,7 +40,7 @@ const LoginFormPage = ({ currState }) => {
     }, [email, password, currLanguage])
 
     const demouserLogin = () => {
-        const credential = {credential: "john.smith@gmail.com", password: "secret password"}
+        const credential = {credential: "demo@user.io", password: "password"}
         logIn(credential)
     }
 
