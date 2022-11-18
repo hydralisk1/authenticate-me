@@ -89,6 +89,7 @@ const EventSettingBody = () => {
                     if(res.status < 400) return res.json()
                 })
                 .then(res => {
+                    console.log(res)
                     if(!res.Venues.length){
                         window.alert(scripts[currLanguage].NeedVenues)
                         history.push(`/groups/${groupId}/settings`)
