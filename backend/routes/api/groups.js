@@ -98,7 +98,6 @@ router.get('/:groupId/events', async (req, res, next) => {
         },{
             model: Venue,
             attributes: ['id', 'city', 'state'],
-            required: false
         },{
             model: User,
         },{

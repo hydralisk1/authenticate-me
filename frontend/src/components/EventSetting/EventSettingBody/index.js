@@ -89,7 +89,6 @@ const EventSettingBody = () => {
                     if(res.status < 400) return res.json()
                 })
                 .then(res => {
-                    console.log(res)
                     if(!res.Venues.length){
                         window.alert(scripts[currLanguage].NeedVenues)
                         history.push(`/groups/${groupId}/settings`)
@@ -99,7 +98,6 @@ const EventSettingBody = () => {
                     }
                 })
                 .catch((e) => {
-                    console.log(e)
                     window.alert('Something went wrong')
                     history.push('/home')
                 })
@@ -144,7 +142,6 @@ const EventSettingBody = () => {
     return (
         isVenueLoaded ?
         <div className={styles.container}>
-            {console.log(events)}
             <h1 className={styles.eventSettingTitle}>{scripts[currLanguage].EventSettings}</h1>
             {
                 isEventLoaded &&
