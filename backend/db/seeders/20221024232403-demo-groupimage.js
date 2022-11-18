@@ -25,7 +25,7 @@ module.exports = {
     {
       groupId: groupIds[1].id,
       url: 'https://media.wired.com/photos/5cdefb92b86e041493d389df/2:1/w_1500,h_750,c_limit/Culture-Grumpy-Cat-487386121.jpg',
-      preview: "false"
+      preview: "true"
     }], {});
   },
 

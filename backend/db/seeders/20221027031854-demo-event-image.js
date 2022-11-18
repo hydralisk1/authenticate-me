@@ -21,7 +21,7 @@ module.exports = {
     }, {
       eventId: eventIds[1].id,
       url: 'https://www.purina.co.uk/sites/default/files/2020-12/Understanding%20Your%20Cat%27s%20Body%20LanguageHERO.jpg',
-      preview: "false",
+      preview: "true",
     }])
   },
 
