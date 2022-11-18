@@ -114,7 +114,7 @@ const ShowingEvents = () => {
                     <div className={styles.yourInterests}></div>
                 </div>
                 <div className={styles.right}>
-                    {isLoaded ?
+                    {!isLoaded ?
                         'Loading' :
                         !! events.length ?
                             events.map(event =>
