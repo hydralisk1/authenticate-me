@@ -143,6 +143,7 @@ const EventSettingBody = () => {
     return (
         isVenueLoaded ?
         <div className={styles.container}>
+            {console.log(events)}
             <h1 className={styles.eventSettingTitle}>{scripts[currLanguage].EventSettings}</h1>
             {
                 isEventLoaded &&
