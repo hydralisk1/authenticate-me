@@ -97,7 +97,8 @@ const EventSettingBody = () => {
                         setIsVenueLoaded(true)
                     }
                 })
-                .catch(() => {
+                .catch((e) => {
+                    console.log(e)
                     window.alert('Something went wrong')
                     history.push('/home')
                 })
