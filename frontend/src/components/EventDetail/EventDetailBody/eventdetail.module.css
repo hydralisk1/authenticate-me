@@ -350,3 +350,9 @@ img {
     overflow: hidden;
     text-align: center;
 }
+
+.error {
+    display: flex;
+    color: red;
+    align-items: center;
+}

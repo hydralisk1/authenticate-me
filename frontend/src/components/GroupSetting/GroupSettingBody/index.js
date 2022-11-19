@@ -35,6 +35,7 @@ const GroupSettingBody = () => {
     const [groupImages, setGroupImages] = useState([])
     const [groupImage, setGroupImage] = useState('')
     const [groupImageError, setGroupImageError] = useState('')
+    const [groupImageInputClicked, setGroupImageInputClicked] = useState(false)
     const [preview, setPreview] = useState(true)
 
     const [venues, setVenues] = useState([])
@@ -44,6 +45,10 @@ const GroupSettingBody = () => {
     const [addressError, setAddressError] = useState('')
     const [cityVenueError, setCityVenueError] = useState('')
     const [stateVenueError, setStateVenueError] = useState('')
+
+    const [addressInputClicked, setAddressInputClicked] = useState(false)
+    const [cityInputClicked, setCityInputClicked] = useState(false)
+    const [stateInputClicked, setStateInputClicked] = useState(false)
 
     const [venueInput, setVenueInput] = useState(false)
     const [groupImageInput, setGroupImageInput] = useState(false)
@@ -136,10 +141,12 @@ const GroupSettingBody = () => {
             csrfFetch(url, options)
                 .then(res => {
                     if(res.status > 400) window.alert(scripts[currLanguage].Failed)
-                    else {
-                        window.alert(scripts[currLanguage].Success)
-                        setModified(false)
-                    }
+                    else return res.json()
+                })
+                .then(res => {
+                    window.alert(scripts[currLanguage].Success)
+                    setOriginal(res)
+                    setModified(false)
                 })
         }
     }
@@ -161,6 +168,7 @@ const GroupSettingBody = () => {
                     setGroupImages([...groupImages, res])
                     setGroupImageInput(false)
                     setGroupImage('')
+                    setGroupImageInputClicked(false)
                     window.alert(scripts[currLanguage].Success)
                 })
                 .catch((e) => {
@@ -227,6 +235,9 @@ const GroupSettingBody = () => {
                         setAddress('')
                         setCityVenue('')
                         setStateVenue('')
+                        setAddressInputClicked(false)
+                        setCityInputClicked(false)
+                        setStateInputClicked(false)
                         window.alert(scripts[currLanguage].Success)
                     })
                     .catch(() => {window.alert(scripts[currLanguage].Failed)})
@@ -358,13 +369,15 @@ const GroupSettingBody = () => {
                         ))}
                     </div>
                 }
-                { groupImageInput &&
+                { groupImageInput &&<>
                     <div className={styles.imageInputContainer}>
                         <div>
-                            <input type='url' value={groupImage} className={styles.imageInput} onChange={e => setGroupImage(e.target.value)} />
+                            <input type='url' value={groupImage} className={styles.imageInput} onChange={e => setGroupImage(e.target.value)} onBlur={() => setGroupImageInputClicked(true)} />
                         </div>
                         <button className={styles.add} onClick={addGroupImage}>{scripts[currLanguage].Add}</button>
                     </div>
+                    {groupImageInputClicked && <div className={styles.error}>{groupImageError}</div>}
+                </>
                 }
                 { groupImageInput ?
                     <div className={styles.groupImageAdd} onClick={() => setGroupImageInput(false)}>{scripts[currLanguage].CancelAddImage}</div> :
@@ -388,33 +401,43 @@ const GroupSettingBody = () => {
                         ))}
                     </div>
                 }
-                { venueInput &&
-                    <div className={styles.imageInputContainer}>
-                        <div style={{width: '600px'}}>
+                { venueInput &&<>
+                    <div className={styles.venueInputContainer}>
+                        <div>
                             <input
                                 type='text'
                                 value={address}
                                 className={styles.imageInput}
                                 onChange={e => setAddress(e.target.value)}
                                 placeholder='Street'
+                                onBlur={() => setAddressInputClicked(true)}
                             />
+                        </div>
+                        <div className={styles.error}>{addressInputClicked && addressError}</div>
+                        <div>
                             <input
                                 type='text'
                                 value={cityVenue}
                                 className={styles.imageInput}
                                 onChange={e => setCityVenue(e.target.value)}
                                 placeholder='City'
+                                onBlur={() => setCityInputClicked(true)}
                             />
+                        </div>
+                        <div className={styles.error}>{cityInputClicked && cityVenueError}</div>
+                        <div>
                             <input
                                 type='text'
                                 value={stateVenue}
                                 className={styles.imageInput}
                                 onChange={e => setStateVenue(e.target.value)}
                                 placeholder='State'
+                                onBlur={() => setStateInputClicked(true)}
                             />
                         </div>
-                        <button className={styles.add} onClick={addVenue}>{scripts[currLanguage].Add}</button>
+                        <div className={styles.error}>{stateInputClicked && stateVenueError}</div>
                     </div>
+                    <button className={styles.add} onClick={addVenue}>{scripts[currLanguage].Add}</button></>
                 }
                 { venueInput ?
                     <div className={styles.groupImageAdd} onClick={() => setVenueInput(false)}>{scripts[currLanguage].CancelAddVenue}</div> :

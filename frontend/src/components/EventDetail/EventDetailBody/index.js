@@ -27,6 +27,7 @@ const EventDetailBody = () => {
     const [eventImage, setEventImage] = useState('')
     const [eventImageError, setEventImageError] = useState('')
     const [eventImageInput, setEventImageInput] = useState(false)
+    const [eventImageInputClicked, setEventImageInputClicked] = useState(false)
     const [showingEventImage, setShowingEventImage] = useState('')
     const groups = useSelector(state => state.session.groups)
     const user = useSelector(state => state.session.user)
@@ -49,6 +50,7 @@ const EventDetailBody = () => {
                     setEventImages([...eventImages, res])
                     setEventImageInput(false)
                     setEventImage('')
+                    setEventImageInputClicked(false)
                     window.alert('Successfully added')
                 })
                 .catch((e) => {
@@ -136,13 +138,15 @@ const EventDetailBody = () => {
                                 </>
                             )}
                             {
-                                eventImageInput &&
-                                <div className={styles.imageInputContainer}>
-                                    <div>
-                                        <input type='url' value={eventImage} className={styles.imageInput} onChange={e => setEventImage(e.target.value)} />
+                                eventImageInput && <>
+                                    <div className={styles.imageInputContainer}>
+                                        <div>
+                                            <input type='url' value={eventImage} className={styles.imageInput} onChange={e => setEventImage(e.target.value)} onBlur={() => {setEventImageInputClicked(true)}} />
+                                        </div>
+                                        <button className={styles.add} onClick={addEventImage}>{scripts[currLanguage].Add}</button>
                                     </div>
-                                    <button className={styles.add} onClick={addEventImage}>{scripts[currLanguage].Add}</button>
-                                </div>
+                                    { eventImageInputClicked && <div className={styles.error}>{eventImageError}</div>}
+                                </>
                             }
                             { permission === 2 && (
                                 eventImageInput ?
@@ -206,7 +210,7 @@ const EventDetailBody = () => {
                         </div>
                         <div className={styles.buttons}>
                             <div>
-                                <div className={styles.price}>{!!event.price ? `$${event.price}` : 'Free'}</div>
+                                <div className={styles.price}>{!!event.price ? `$ ${parseFloat(event.price).toFixed(2)}` : 'Free'}</div>
                                 <div className={styles.spots}>{remainingSpot} spot{remainingSpot > 1 && 's'} left</div>
                             </div>
                             <div style={{display: 'flex', alignItems: 'center', width: '200px'}}>

@@ -52,7 +52,10 @@
 }
 
 .error {
+    display: flex;
     color: red;
+    align-items: center;
+    margin-left: 1rem;
 }
 
 .nameInput {
@@ -160,12 +163,18 @@ textarea {
     display: flex;
 }
 
+.venueInputContainer {
+    display: grid;
+    grid-template-columns: 600px 1fr;
+}
+
 .add {
     cursor: pointer;
     border: none;
     background-color: transparent;
     color: #388092;
     font-weight: 500;
+    margin-top: 1rem;
     margin-left: 1rem;
 }
 
