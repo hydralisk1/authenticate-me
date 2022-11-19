@@ -134,7 +134,7 @@ const CreateGroupBody = () => {
                         <p>{scripts[currLanguage].MannamGroups}</p>
                         <div className={styles.location}>
                             <div className={styles.address}>{`${location.city}, ${location.state}, ${location.country}`}</div>
-                            <div className={styles.changeLocation}>{scripts[currLanguage].ChangeLocation}</div>
+                            {/* <div className={styles.changeLocation}>{scripts[currLanguage].ChangeLocation}</div> */}
                         </div>
                     </div>
                 )
