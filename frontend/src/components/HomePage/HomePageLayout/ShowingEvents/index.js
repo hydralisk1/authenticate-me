@@ -199,8 +199,8 @@ const ShowingEvents = () => {
                 </div>
                 <div className={styles.right}>
                     <div className={styles.tabs}>
-                        <div className={isCurrentTabEvents ? styles.tab : `${styles.tab} ${styles.notChosen}`} onClick={() => setIsCurrentTabEvents(true)}>Events</div>
-                        <div className={isCurrentTabEvents ? `${styles.tab} ${styles.notChosen}` : styles.tab} onClick={() => setIsCurrentTabEvents(false)}>Groups</div>
+                        <div className={isCurrentTabEvents ? styles.tab : `${styles.tab} ${styles.notChosen}`} onClick={() => setIsCurrentTabEvents(true)}>All Events</div>
+                        <div className={isCurrentTabEvents ? `${styles.tab} ${styles.notChosen}` : styles.tab} onClick={() => setIsCurrentTabEvents(false)}>All Groups</div>
                         <div className={styles.notTab}></div>
                     </div>
                     <div className={styles.contentContainer}>
