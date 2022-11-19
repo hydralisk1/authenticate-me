@@ -78,6 +78,9 @@ function App() {
         <Route exact path='/'>
           {isLoaded && (isLoggedIn ? <Redirect to='/home' /> : <MainPage />)}
         </Route>
+        <Route>
+          {isLoaded && (isLoggedIn ? <Redirect to='/home' /> : <MainPage />)}
+        </Route>
       </Switch>
     </>
   );
