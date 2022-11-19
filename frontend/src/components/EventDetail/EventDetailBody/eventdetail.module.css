@@ -2,11 +2,13 @@
     width: 100%;
     border-bottom: 1px solid darkgray;
     display: flex;
+    padding: 0 1rem;
 }
 
 .bodyContainer {
     width: 100%;
     background-color: rgb(246, 247, 248);
+    padding: 0 1rem;
 }
 
 .content {
@@ -127,7 +129,7 @@ img {
     position: sticky;
     background-color: white;
     width: 100%;
-    padding: 1rem 0;
+    padding: 1rem;
     bottom: 0;
 }
 

@@ -1,6 +1,7 @@
 .container {
     max-width: 1384px;
     margin: 24px auto 0 auto;
+    padding: 0 1rem;
 }
 
 .sayHi {

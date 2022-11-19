@@ -2,13 +2,14 @@
     width: 100%;
     background-color: rgb(55, 62, 71);
     color: white;
-    padding: 1rem 0;
+    padding: 1rem;
 }
 
 .bottomContainer {
     width: 100%;
     background-color: rgb(48, 54, 62);
     color: white;
+    padding: 1rem;
 }
 
 .createGroup {
