@@ -13,7 +13,10 @@ const ShowingEvents = () => {
     const [shownMonth, setShownMonth] = useState(new Date())
     const currLanguage = useSelector(state => state.language)
     const [isLoaded, setIsLoaded] = useState(false)
+    const [isGroupLoaded, setIsGroupLoaded] = useState(false)
     const [events, setEvents] = useState([])
+    const [groups, setGroups] = useState([])
+    const [isCurrentTabEvents, setIsCurrentTabEvents] = useState(true)
 
     const changeMonth = (previous = false) => {
         const year = shownMonth.getFullYear()
@@ -24,7 +27,9 @@ const ShowingEvents = () => {
 
     const getEvents = () => {
         csrfFetch('/api/events')
-            .then(response => response.json())
+            .then(response => {
+                if(response.status < 400) return response.json()
+            })
             .then(result => {
                 // filtering outdated events
                 // for test, not filtering outdated events
@@ -51,6 +56,20 @@ const ShowingEvents = () => {
             .catch(() => {
                 setEvents([])
                 setIsLoaded(true)
+            })
+    }
+
+    const getGroups = () => {
+        csrfFetch('/api/groups')
+            .then(res => {
+                if(res.status < 400) return res.json()
+            })
+            .then(res => {
+                setGroups(res)
+                setIsGroupLoaded(true)
+            })
+            .catch(() => {
+                setIsGroupLoaded(true)
             })
     }
 
@@ -101,7 +120,72 @@ const ShowingEvents = () => {
         )
     }
 
-    useEffect(getEvents, [currLanguage])
+    useEffect(() => {
+        if(isCurrentTabEvents && !isLoaded) getEvents()
+        if(!isCurrentTabEvents && !isGroupLoaded) getGroups()
+    }, [currLanguage, isCurrentTabEvents])
+
+    const showingGroups = () => {
+        return (
+            !isGroupLoaded ?
+                'Loading' :
+                !!groups.length ?
+                    groups.map((group, i) =>
+                        <Link key={group.id + group.createdAt + group.createdAt} to={`/groups/${group.id}`}>
+                            <div className={styles.event} key={group.id}>
+                                <div className={styles.imgHolder} key={group.createdAt + i}>
+                                    {group.previewImage ?
+                                        <img className={styles.img} src={group.previewImage} style={{borderRadius: '4px'}} alt='preview' key={group.about} width='168px' onError={(e) => e.target.src = brokenLink} /> :
+                                        <Cats className={styles.img} key={group.about + group.id + i} />}
+                                </div>
+                                <div key={group.id + i + group.startDate} className={styles.eventDesc}>
+                                    <div key={i + group.id + group.endDate} className={styles.eventContainer}>
+                                        <p key={i + group.id + group.createdAt + group.createdAt} style={{marginBottom: '1rem'}}className={styles.eventName}>{group.name}</p>
+                                        <p key={i + group.id + group.createdAt + group.createdAt + group.createdAt} className={styles.date}>{group.city}</p>
+                                        <p key={i + group.id + group.createdAt + group.createdAt + group.createdAt + group.createdAt} className={styles.groupName}>{group.state}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </Link>
+                    ) :
+                <div><h2>{scripts[currLanguage].NoEvent}</h2></div>
+        )
+    }
+
+    const showingEvents = () => {
+        return (
+            !isLoaded ?
+                'Loading' :
+                !!events.length ?
+                    events.map(event =>
+                        <Link key={event.id + event.endDate + event.startDate} to={`/events/${event.id}`}>
+                            <div className={styles.event} key={event.id}>
+                                <div className={styles.imgHolder} key={event.startDate}>
+                                    {
+                                        event.type === 'Online' && <div className={styles.online}><img src={onlineVideo} alt='online' width="18px" height="18px" />{" "}{scripts[currLanguage].OnlineEvent}</div>
+                                    }
+                                    {
+                                        event.previewImage ?
+                                            <img className={styles.img} src={event.previewImage} style={{borderRadius: '4px'}} alt='preview' key={event.endDate} width='168px' onError={(e) => e.target.src = brokenLink} /> :
+                                            <Cats className={styles.img} key={event.endDate} />
+                                    }
+                                </div>
+                                <div key={event.id + event.startDate} className={styles.eventDesc}>
+                                    <div key={event.id + event.endDate} className={styles.eventContainer}>
+                                        <p className={styles.date}>{dateFormatConverter(event.startDate, currLanguage)}</p>
+                                        <p className={styles.eventName}>{event.name}</p>
+                                        <p className={styles.groupName}>{event.Group.name}</p>
+                                    </div>
+                                    <div key={event.id + event.numAttending.toString()} className={styles.numAttending}>
+                                        {event.numAttending}{scripts[currLanguage].Attendees}
+                                    </div>
+                                </div>
+                            </div>
+                        </Link>
+                    ) :
+                <div><h2>{scripts[currLanguage].NoEvent}</h2></div>
+        )
+    }
 
     return (
         <div className={styles.container}>
@@ -114,37 +198,14 @@ const ShowingEvents = () => {
                     <div className={styles.yourInterests}></div>
                 </div>
                 <div className={styles.right}>
-                    {!isLoaded ?
-                        'Loading' :
-                        !! events.length ?
-                            events.map(event =>
-                                <Link key={event.id + event.endDate + event.startDate} to={`/events/${event.id}`}>
-                                    <div className={styles.event} key={event.id}>
-                                        <div className={styles.imgHolder} key={event.startDate}>
-                                            {
-                                                event.type === 'Online' && <div className={styles.online}><img src={onlineVideo} alt='online' width="18px" height="18px" />{" "}{scripts[currLanguage].OnlineEvent}</div>
-                                            }
-                                            {
-                                                event.previewImage ?
-                                                    <img className={styles.img} src={event.previewImage} style={{borderRadius: '4px'}} alt='preview' key={event.endDate} width='168px' onError={(e) => e.target.src = brokenLink} /> :
-                                                    <Cats className={styles.img} key={event.endDate} />
-                                            }
-                                        </div>
-                                        <div key={event.id + event.startDate} className={styles.eventDesc}>
-                                            <div key={event.id + event.endDate} className={styles.eventContainer}>
-                                                <p className={styles.date}>{dateFormatConverter(event.startDate, currLanguage)}</p>
-                                                <p className={styles.eventName}>{event.name}</p>
-                                                <p className={styles.groupName}>{event.Group.name}</p>
-                                            </div>
-                                            <div key={event.id + event.numAttending.toString()} className={styles.numAttending}>
-                                                {event.numAttending}{scripts[currLanguage].Attendees}
-                                            </div>
-                                        </div>
-                                    </div>
-                                </Link>
-                            ) :
-                        <div><h2>{scripts[currLanguage].NoEvent}</h2></div>
-                    }
+                    <div className={styles.tabs}>
+                        <div className={isCurrentTabEvents ? styles.tab : `${styles.tab} ${styles.notChosen}`} onClick={() => setIsCurrentTabEvents(true)}>Events</div>
+                        <div className={isCurrentTabEvents ? `${styles.tab} ${styles.notChosen}` : styles.tab} onClick={() => setIsCurrentTabEvents(false)}>Groups</div>
+                        <div className={styles.notTab}></div>
+                    </div>
+                    <div className={styles.contentContainer}>
+                        {isCurrentTabEvents ? showingEvents() : showingGroups()}
+                    </div>
                 </div>
             </div>
         </div>

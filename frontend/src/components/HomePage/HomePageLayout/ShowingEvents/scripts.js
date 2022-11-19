@@ -1,6 +1,6 @@
 const scripts = {
     EN: {
-        Events: 'Events from groups',
+        Events: 'Events and Groups',
         FailedLoading: 'Failed to load',
         NoEvent: 'There\'s no events for now',
         Day: ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'],
@@ -9,7 +9,7 @@ const scripts = {
         OnlineEvent: 'Online event',
     },
     KR: {
-        Events: '그룹 이벤트',
+        Events: '이벤트와 그룹',
         FailedLoading: '로딩 중 오류가 발생했습니다.',
         NoEvent: '현재 등록된 이벤트가 없습니다.',
         Day: ['일요일', '월요일', '화요일', '수요일', '목요일', '금요일', '토요일'],
