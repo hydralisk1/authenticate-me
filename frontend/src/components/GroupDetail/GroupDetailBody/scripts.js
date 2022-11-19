@@ -10,7 +10,7 @@ const scripts = {
         YouReMember: 'Leave this group',
         GroupSetting: 'Setting Group',
         WhatWe: 'What we\'re about',
-        CreateEvent: 'Create Event',
+        CreateEvent: 'Setting Events',
     },
     KR: {
         Details: '세부내용',
@@ -23,7 +23,7 @@ const scripts = {
         YouReMember: '그룹 탈퇴',
         GroupSetting: '그룹 설정',
         WhatWe: '우리는 이런 모임입니다',
-        CreateEvent: '이벤트 생성',
+        CreateEvent: '이벤트 설정',
     },
 }
 

@@ -6,7 +6,9 @@ const EventSetting = () => {
     return (
         <div>
             <TopMenuLayout />
-            <EventSettingBody />
+            <div style={{minHeight: '400px'}}>
+                <EventSettingBody />
+            </div>
             <Footer />
         </div>
     )

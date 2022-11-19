@@ -40,11 +40,11 @@ const MyGroupBody = () => {
                             <Link key={myGroups[gId].name + i} to={`/groups/${gId}`}>
                                 <div className={styles.imgContainer} key={myGroups[gId].createdAt + i}>
                                     {myGroups[gId].previewImage ?
-                                        <img className={styles.groupImages} src={myGroups[gId].previewImage} alt='group' key={myGroups[gId].createdAt} onError={e => e.target.src={brokenLink} }/> :
+                                        <img className={styles.groupImages} src={myGroups[gId].previewImage} alt='group' key={myGroups[gId].createdAt} onError={e => e.target.src=brokenLink }/> :
                                         <Cats borderRadius='8px' />
                                     }
                                 </div>
-                                <h3 key={gId + myGroups[gId].about}>{myGroups[gId].name}</h3>
+                                <div className={styles.groupName}><h3 key={gId + myGroups[gId].about}>{myGroups[gId].name}</h3></div>
                             </Link>
                         )
                     }
@@ -59,11 +59,11 @@ const MyGroupBody = () => {
                             <Link key={myGroups[gId].name + i} to={`/groups/${gId}`}>
                                 <div className={styles.imgContainer} key={myGroups[gId].about + i}>
                                     {myGroups[gId].previewImage ?
-                                        <img className={styles.groupImages} src={myGroups[gId].previewImage} alt='group' key={myGroups[gId].createdAt} onError={e => e.target.src = {brokenLink}} /> :
+                                        <img className={styles.groupImages} src={myGroups[gId].previewImage} alt='group' key={myGroups[gId].createdAt} onError={e => e.target.src = brokenLink} /> :
                                         <Cats borderRadius='8px' />
                                     }
                                 </div>
-                                <h3 key={myGroups[gId].createdAt + gId}>{myGroups[gId].name}</h3>
+                                <div className={styles.groupName}><h3 key={myGroups[gId].createdAt + gId}>{myGroups[gId].name}</h3></div>
                             </Link>
                         )
                     }

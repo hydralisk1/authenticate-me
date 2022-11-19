@@ -1,6 +1,6 @@
-# Mannam - Meet up Clone
+# Meetup Clone
 
-### Live Link: [Mannam - Meet up clone](https://meetup-clone-joonil.herokuapp.com)
+## Database Schema Design
 
 ![meetup-dbdiagram]
 

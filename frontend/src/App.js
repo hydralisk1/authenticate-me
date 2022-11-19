@@ -15,6 +15,7 @@ import MyGroup from './components/MyGroup';
 import GroupSetting from './components/GroupSetting'
 import GroupRemove from './components/GroupRemove';
 import EventSetting from './components/EventSetting';
+// import EventDetailSettings from './components/EventDetailSettings';
 
 function App() {
   const dispatch = useDispatch()
@@ -44,6 +45,9 @@ function App() {
   return (
     <>
       <Switch>
+        {/* <Route path='/events/:eventId/settings'>
+          {isLoaded && (isLoggedIn ? <EventDetailSettings /> : <Redirect to='/' />)}
+        </Route> */}
         <Route path='/events/:eventId'>
           {isLoaded && (isLoggedIn ? <EventDetail /> : <Redirect to='/' />)}
         </Route>

@@ -1,6 +1,6 @@
 import { csrfFetch } from '../../../store/csrf'
 import { useEffect, useState } from 'react'
-import { useSelector } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
 import { useParams } from "react-router-dom"
 import { Link } from 'react-router-dom'
 import styles from './eventdetail.module.css'
@@ -8,25 +8,148 @@ import scripts from './scripts'
 import brokenLink from '../../../assets/broken-link.webp'
 import { dateFormatConverter } from '../../../util/timeConverter'
 import Maps from '../../Maps'
+import closeIcon from '../../../assets/x-symbol-svgrepo-com.svg'
+import { joinGroup } from '../../../store/session'
 
 const EventDetailBody = () => {
+    const dispatch = useDispatch()
     const currLanguage = useSelector(state => state.language)
     const { eventId } = useParams()
     const [isEventLoaded, setIsEventLoaded] = useState(false)
     const [areAttendeesLoaded, setAreAttendeesLoaded] = useState(false)
+    const [permission, setPermission] = useState(0) // 2: organizer, 1: memeber, 0: not a member
     const [event, setEvent] = useState({})
     const [attendees, setAttendees] = useState({})
+    const [isJoiningGroup, setIsJoiningGroup] = useState(false)
+    const [remainingSpot, setRemainingSpot] = useState(0)
+    const [isAttendee, setIsAttendee] = useState(false)
+    const [eventImages, setEventImages] = useState([])
+    const [eventImage, setEventImage] = useState('')
+    const [eventImageError, setEventImageError] = useState('')
+    const [eventImageInput, setEventImageInput] = useState(false)
+    const [showingEventImage, setShowingEventImage] = useState('')
+    const groups = useSelector(state => state.session.groups)
+    const user = useSelector(state => state.session.user)
+
+    // const [isModifyMode, setIsModifyMode] = useState(false)
+    const addEventImage = () => {
+        if(!eventImageError.length){
+            const url = `/api/events/${eventId}/images`
+            const options = {
+                method: 'POST',
+                body: JSON.stringify({
+                    url: eventImage,
+                    preview: 'true'
+                })
+            }
+
+            csrfFetch(url, options)
+                .then(res => res.json())
+                .then(res => {
+                    setEventImages([...eventImages, res])
+                    setEventImageInput(false)
+                    setEventImage('')
+                    window.alert('Successfully added')
+                })
+                .catch((e) => {
+                    window.alert('Something went wrong')
+                    console.log(e)
+                })
+        }
+    }
+
+    const attendThisEvent = () => {
+        if(groups.joined.includes(event.groupId)) {
+            csrfFetch(`/api/events/${eventId}/attendance`, {method: 'POST'})
+                .then(res => {
+                    if(res.status < 400) {
+                        window.alert('Successfully requested')
+                        window.location.reload(false)
+                    }
+                })
+                .catch(() => window.alert('Something went wrong'))
+        }else {
+            setIsJoiningGroup(true)
+        }
+    }
+
+    const joinAndRequest = () => {
+        dispatch(joinGroup(event.groupId))
+            .then(res => {
+                if(res) attendThisEvent()
+                else window.alert('Something went wrong')
+            })
+            .catch((e) => console.log(e))
+    }
+
+    useEffect(() => {
+        const regex = new RegExp('(https?://)?([\\da-z.-]+)\\.([a-z.]{2,6})[/\\w .-]*/?')
+        if(!regex.test(eventImage)) setEventImageError('Invalid URL')
+        else setEventImageError('')
+    }, [eventImage])
+
+    // const cancelThisEvent = () => {
+    //     csrfFetch(`/api/events/${eventId}/attendance`, {
+    //         method: 'DELETE',
+    //         body: JSON.stringify({memberId: user.id})
+    //     })
+    //     .then(res => {
+    //         if(res.status < 400){
+    //             window.alert('Successfully canceled your attendance')
+    //             setIsAttendee(false)
+    //         }
+    //     })
+    //     .catch(() => window.alert('Something went wrong'))
+    // }
 
     const detailPage = () => {
         return (
             <>
                 <div className={styles.titleContainer}>
-                    <div className={styles.content}><h1 className={styles.eventName}>{event.name}</h1></div>
+                    <div className={styles.content}>
+                        <h1 className={styles.eventName}>{event.name}</h1>
+                        <div className={styles.buttonContainer}>
+                            {/* {
+                                permission === 2 &&
+                                (isModifyMode ?
+                                    <button className={styles.settingButton} onClick={() => setIsModifyMode(false)}>{scripts[currLanguage].Cancel}</button> :
+                                    <button className={styles.settingButton} onClick={() => setIsModifyMode(true)}>{scripts[currLanguage].Modify}</button>
+                                )
+                            } */}
+                        </div>
+                    </div>
                 </div>
                 <div className={styles.bodyContainer}>
                     <div className={`${styles.content} ${styles.body}`}>
                         <div className={styles.left}>
-                            { event.EventImages.map(image => <img key={image.id} src={image.url} alt='img' onError={(e) => e.target.src = brokenLink} />)}
+                            { !!eventImages.length && (<>
+                                    <div className={styles.eventImageContainer}>
+                                        <img className={styles.eventImage} src={showingEventImage} alt='event' />
+                                    </div>
+
+                                    <div className={styles.eventImagesContainer}>
+                                        {eventImages.map(image =>
+                                        <div key={image.url} className={styles.anImagesContainer} onClick={() => {setShowingEventImage(image.url)}}><div className={styles.anImageFrame} key={image.id + image.url}>
+                                            <img className={styles.eventImage} key={image.id} src={image.url} alt='img' onError={(e) => e.target.src = brokenLink} />
+                                        </div></div>)}
+                                    </div>
+                                </>
+                            )}
+                            {
+                                eventImageInput &&
+                                <div className={styles.imageInputContainer}>
+                                    <div>
+                                        <input type='url' value={eventImage} className={styles.imageInput} onChange={e => setEventImage(e.target.value)} />
+                                    </div>
+                                    <button className={styles.add} onClick={addEventImage}>{scripts[currLanguage].Add}</button>
+                                </div>
+                            }
+                            { permission === 2 && (
+                                eventImageInput ?
+                                    <div className={styles.imageAdd} onClick={() => {setEventImageInput(false)}}>{scripts[currLanguage].CancelAddingImage}</div> :
+                                    <div className={styles.imageAdd} onClick={() => {setEventImageInput(true)}}>{scripts[currLanguage].AddImage}</div>
+                                )
+                            }
                             <h2>{scripts[currLanguage].Details}</h2>
                             <p className={styles.desc}>{event.description}</p>
                             <h2>{`${scripts[currLanguage].Attendees} (${event.numAttending})`}</h2>
@@ -73,6 +196,48 @@ const EventDetailBody = () => {
                         </div>
                     </div>
                 </div>
+                <div className={styles.attendContainer}>
+                    <div className={styles.attendContentContainer}>
+                        <div>
+                            <h3 className={styles.time}>{dateFormatConverter(event.startDate, currLanguage)}</h3>
+                            <h3 className={styles.location}>
+                                {event.type === 'Online' ? scripts[currLanguage].Online : `${event.Venue.address}, ${event.Venue.city}`}
+                            </h3>
+                        </div>
+                        <div className={styles.buttons}>
+                            <div>
+                                <div className={styles.price}>{!!event.price ? `$${event.price}` : 'Free'}</div>
+                                <div className={styles.spots}>{remainingSpot} spot{remainingSpot > 1 && 's'} left</div>
+                            </div>
+                            <div style={{display: 'flex', alignItems: 'center', width: '200px'}}>
+                                {
+                                    permission < 2 && remainingSpot > 0 &&
+                                    //     <button className={styles.attendButton}>
+                                    //         {scripts[currLanguage].Settings}
+                                    //     </button>
+                                    // :
+                                        <button className={styles.attendButton} onClick={attendThisEvent} disabled={isAttendee}>
+                                            {scripts[currLanguage].Attend}
+                                        </button>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div style={{height: document.documentElement.scrollHeight}} className={isJoiningGroup ? `${styles.modalContainer} ${styles.modalVisible}` : styles.modalContainer} onClick={() => setIsJoiningGroup(false)}>
+                    <div className={isJoiningGroup ? `${styles.joiningGroup} ${styles.joiningGroupVisible}` : styles.joiningGroup} onClick={e => e.stopPropagation()}>
+                        <div className={styles.closeButton} onClick={() => setIsJoiningGroup(false)}>
+                            <img src={closeIcon} alt='close' width='14px' height='14px' />
+                        </div>
+                        <div className={styles.explain}>{scripts[currLanguage].InOrder}</div>
+                        <div className={styles.groupName}>{event.Group.name}</div>
+                        <div className={styles.explain}>{scripts[currLanguage].DoYou}</div>
+                        <div className={styles.joinButtonContainer}>
+                            <button className={styles.joinButton} onClick={() => joinAndRequest()}>{scripts[currLanguage].Join}</button>
+                            <button className={styles.cancelButton} onClick={() => setIsJoiningGroup(false)}>{scripts[currLanguage].Cancel}</button>
+                        </div>
+                    </div>
+                </div>
             </>
         )
     }
@@ -81,13 +246,19 @@ const EventDetailBody = () => {
         csrfFetch(`/api/events/${eventId}`)
             .then(res => res.json())
             .then(res => {
+                if(groups.organized.includes(res.groupId)) setPermission(2)
+                else if(groups.joined.includes(res.groupId)) setPermission(1)
+                setRemainingSpot(res.capacity - res.numAttending)
                 setEvent(res)
+                setEventImages(res.EventImages)
+                setShowingEventImage(res.EventImages.length ? res.EventImages[0].url : '')
                 setIsEventLoaded(true)
             })
 
         csrfFetch(`/api/events/${eventId}/attendees`)
             .then(res => res.json())
             .then(res => {
+                if(res.Attendees.some(a => a.id === user.id)) setIsAttendee(true)
                 setAttendees(res.Attendees)
                 setAreAttendeesLoaded(true)
             })

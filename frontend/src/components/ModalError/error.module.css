@@ -1,8 +1,8 @@
 .error {
     width: 460px;
     padding: 1rem;
-    position: sticky;
-    top: 120px;
+    position: fixed;
+    top: 40px;
     left: 50%;
     transform: translateX(-50%);
     background-color: #e35063;

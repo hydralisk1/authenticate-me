@@ -126,8 +126,8 @@ const ShowingEvents = () => {
                                             }
                                             {
                                                 event.previewImage ?
-                                                    <img src={event.previewImage} style={{borderRadius: '4px'}} alt='preview' key={event.endDate} width='168px' onError={(e) => e.target.src = brokenLink} /> :
-                                                    <Cats key={event.endDate} />
+                                                    <img className={styles.img} src={event.previewImage} style={{borderRadius: '4px'}} alt='preview' key={event.endDate} width='168px' onError={(e) => e.target.src = brokenLink} /> :
+                                                    <Cats className={styles.img} key={event.endDate} />
                                             }
                                         </div>
                                         <div key={event.id + event.startDate} className={styles.eventDesc}>

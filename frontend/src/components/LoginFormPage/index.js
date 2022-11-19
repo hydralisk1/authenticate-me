@@ -56,8 +56,6 @@ const LoginFormPage = ({ currState }) => {
                         email: res.email
                     }
 
-                    localStorage.setItem('userPersist', JSON.stringify(user))
-
                     setEmail('')
                     setPassword('')
                     setEmailClicked(false)
@@ -89,8 +87,8 @@ const LoginFormPage = ({ currState }) => {
                 <div className={styles.top}>
                     <img src={logoImg} alt='logo' width='48px' height='48px' />
                     <h2 className={styles.title}>{scripts[currLanguage].LogIn}</h2>
-                    {scripts[currLanguage].NotAMember}{" "}
-                    {scripts[currLanguage].SignUp}
+                    {/* {scripts[currLanguage].NotAMember}{" "}
+                    {scripts[currLanguage].SignUp} */}
                 </div>
                 <form className={`${styles.stretch} ${styles.form}`} onSubmit={handleSubmit}>
                     <div className={styles.stretch}>
@@ -117,9 +115,9 @@ const LoginFormPage = ({ currState }) => {
                                 {scripts[currLanguage].Password}
                             </label>
                         </div>
-                        <div className={styles.forgotPassword}>
+                        {/* <div className={styles.forgotPassword}>
                             {scripts[currLanguage].ForgotPassword}
-                        </div>
+                        </div> */}
                     </div>
                     <div className={styles.stretch}>
                         <input

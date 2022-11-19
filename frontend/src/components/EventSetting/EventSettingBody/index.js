@@ -37,6 +37,19 @@ const EventSettingBody = () => {
 
     const [eventInput,setEventInput] = useState(false)
 
+    const removeEvent = eId => {
+        csrfFetch(`/api/events/${eId}`, {method: 'DELETE'})
+            .then(res => {
+                if(res.status < 400){
+                    window.alert('Successfully removed')
+                    setEvents(events.filter(e => e.id !== eId))
+                }
+            })
+            .catch(() => {
+                window.alert('something went wrong')
+            })
+    }
+
     const handleSubmit = e => {
         e.preventDefault()
         if(!nameError.length && !capacityError && !priceError && !descError && !startDateError && !endDateError && venueId !== undefined){
@@ -45,7 +58,7 @@ const EventSettingBody = () => {
                 name,
                 type: type ? 'Online' : 'In person',
                 capacity: parseInt(capacity),
-                price: parseFloat(price),
+                price: price.toString(),
                 description: desc,
                 startDate,
                 endDate
@@ -137,7 +150,7 @@ const EventSettingBody = () => {
 
         if(new Date(endDate).getTime() - new Date(startDate).getTime() < 0) setEndDateError(scripts[currLanguage].EndDateError)
         else setEndDateError('')
-    }, [name, capacity, price, desc, startDate, endDate])
+    }, [name, capacity, price, desc, startDate, endDate, currLanguage])
 
     return (
         isVenueLoaded ?
@@ -150,21 +163,29 @@ const EventSettingBody = () => {
                 <div className={styles.eventContainer}>
                     {
                         events.map((event, i) =>
-                            <Link to={`/events/${event.id}`}>
-                                <div key={i}>
-                                    <div key={event.id}>
-                                        {
-                                            !event.previewImage ? <Cats key={event.name + i} width='100%' /> :
-                                            <img src={event.previewImage} alt='event' key={event.name + i} onError={e => {e.target.src = brokenLink}} />
-                                        }
-                                    </div>
-                                    <div className={styles.eventName} key={event.name}>
-                                        <div className={styles.eventTitle}>{event.name}</div>
-                                        <div className={styles.eventLocation}>{`${event.Venue.city}, ${event.Venue.state}`}</div>
-                                        <div className={styles.date}>{dateFormatConverter(event.startDate, currLanguage)}</div>
-                                    </div>
+                        <>
+
+                            <div key={i}>
+                                <div className={styles.imgContainer} key={event.id}>
+                                    <Link key={(3*(i+1)) + event.name + event.name} to={`/events/${event.id}`}>
+                                    {
+                                        !event.previewImage ? <Cats key={event.name + i + event.name + event.name  + event.startDate} width='100%' /> :
+                                        <img src={event.previewImage} alt='event' key={event.name + i + event.name} onError={e => {e.target.src = brokenLink}} />
+                                    }
+                                    </Link>
                                 </div>
-                            </Link>
+                                <div className={styles.eventName} key={event.name + event.name + event.name + i}>
+                                    <Link key={event.endDate + (70*(i+1) + event.startDate) + event.name} to={`/events/${event.id}`}>
+                                        <div key={event.startDate + event.startDate + i + event.name} className={styles.eventTitle}><p>{event.name}</p></div>
+                                        <div key={event.startDate + (20*(i+1)) + event.startDate + event.name} className={styles.eventLocation}>{`${event.Venue.city}, ${event.Venue.state}`}</div>
+                                        <div key={event.endDate + (31*(i+1)) + event.name + event.startDate} className={styles.date}>{dateFormatConverter(event.startDate, currLanguage)}</div>
+                                    </Link>
+                                </div>
+                                <div key={event.startDate + (131*(i+1)) + event.startDate + event.name + event.endDate} className={styles.removeButtonContainer}><span key={(271*(i+1)) + event.name} onClick={() => removeEvent(event.id)}>Remove</span></div>
+                            </div>
+
+
+                        </>
                         )
                     }
                 </div>)

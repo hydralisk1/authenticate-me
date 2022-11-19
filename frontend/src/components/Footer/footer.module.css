@@ -33,9 +33,8 @@
 }
 
 .footerMenu {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    justify-items: start;
+    display: flex;
+    flex-direction: column;
 }
 
 .menu {
@@ -76,4 +75,21 @@
 
 .bottomMenu > li:not(:first-child):hover {
     color: darkgray;
+}
+
+.contactContainer {
+    display: flex;
+    align-items: center;
+    margin-bottom: 2rem;
+}
+
+.contact {
+    font-size: 1.2rem;
+    font-weight: 500;
+    margin-bottom: 1rem;
+}
+
+.svg {
+	margin: auto;
+	width: 36px;
 }

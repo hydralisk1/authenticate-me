@@ -57,7 +57,8 @@ router.post('/:eventId/attendance', requireAuth, async (req, res, next) => {
         return next(err)
     }
 
-    if(!event.Group.Members.length || event.Group.Members[0].Membership.status === 'pending') {
+    // if(!event.Group.Members.length || event.Group.Members[0].Membership.status === 'pending') {
+    if(!event.Group.Members.length) {
         const err = new Error('Permission denied')
         err.status = 403
 

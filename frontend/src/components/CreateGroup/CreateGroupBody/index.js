@@ -66,8 +66,7 @@ const CreateGroupBody = () => {
     }, [latLngDone])
 
     useEffect(() => {
-        if(groupName.length > maxNumGroupName) setGroupName(groupName.slice(0, 50))
-        else if(!groupName.length) setGroupNameError(scripts[currLanguage].Required)
+        if(!groupName.length) setGroupNameError(scripts[currLanguage].Required)
         else if(groupName.length < 5) setGroupNameError(scripts[currLanguage].TryAdding)
         else setGroupNameError('')
 
@@ -108,7 +107,7 @@ const CreateGroupBody = () => {
 
     const submit = () => {
         const body = {
-            name: groupName,
+            name: groupName.length > 50 ? groupName.slice(0, 50) : groupName,
             about: desc,
             type: isOnline ? 'Online' : 'In person',
             private: isPrivate,

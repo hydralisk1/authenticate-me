@@ -1,7 +1,7 @@
 import { useSelector } from 'react-redux'
 import { Link } from 'react-router-dom'
 import Logo from '../../Logo'
-import SearchBar from './SearchBar'
+// import SearchBar from './SearchBar'
 import Profile from './Profile'
 import styles from './topmenu.module.css'
 import scripts from './scripts'
@@ -14,7 +14,7 @@ const TopMenuLayout = () => {
             <div className={styles.container}>
                 <div className={styles.leftSide}>
                     <Logo />
-                    <SearchBar />
+                    {/* <SearchBar /> */}
                 </div>
                 <div className={styles.rightSide}>
                     <Link to='/groups/new'>

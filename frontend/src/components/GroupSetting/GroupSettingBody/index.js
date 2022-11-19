@@ -235,9 +235,10 @@ const GroupSettingBody = () => {
         }
     }
 
-    const removeVenue = (vId) => {
+    // const removeVenue = (vId) => {
+    //     csrfFetch(``)
 
-    }
+    // }
 
     const removeImage = (gId) => {
         csrfFetch(`/api/group-images/${gId}`, {method: 'DELETE'})
@@ -349,8 +350,8 @@ const GroupSettingBody = () => {
                     <div className={styles.groupImageContainer}>
                         {groupImages.map((image, i) => (
                             <div key={image.id} className={styles.imageContainer}>
-                                <div key={image.url + image.id}>
-                                    <img src={image.url} alt={image.url} key={i} onError={e => {e.target.src=brokenLink}}/>
+                                <div className={styles.imgCon} key={image.url + image.id}>
+                                    <img className={styles.groupImages} src={image.url} alt={image.url} key={i} onError={e => {e.target.src=brokenLink}}/>
                                 </div>
                                 <div key={image.id.toString() + i} className={styles.imageRemove} onClick={() => removeImage(image.id)}>{scripts[currLanguage].Remove}</div>
                             </div>
@@ -381,7 +382,7 @@ const GroupSettingBody = () => {
                                 <div key={v.id + v.lng}>
                                     <Maps key={v.lat.toString() + v.lng.toString()} lat={parseFloat(v.lat)} lng={parseFloat(v.lng)} />
                                     <div key={v.lng + v.lat} className={styles.mapAddress}>{`${v.address}, ${v.city}`}</div>
-                                    <div key={v.id.toString() + i} className={styles.imageRemove} onClick={() => removeVenue(v.id)}>{scripts[currLanguage].Remove}</div>
+                                    {/* <div key={v.id.toString() + i} className={styles.imageRemove} onClick={() => removeVenue(v.id)}>{scripts[currLanguage].Remove}</div> */}
                                 </div>
                             </div>
                         ))}

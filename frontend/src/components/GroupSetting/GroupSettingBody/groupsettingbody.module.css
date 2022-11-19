@@ -130,6 +130,17 @@ textarea {
     color: #4bacc4;
 }
 
+.imgCon {
+    height: 140px;
+}
+
+.groupImages {
+    object-fit: cover;
+    border-radius: 8px;
+    height: 100%;
+    overflow: hidden;
+}
+
 .imageContainer {
     display: grid;
     grid-template-rows: 140px 50px;

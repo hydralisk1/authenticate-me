@@ -20,16 +20,24 @@
 
 .eventContainer {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(4, 250px);
     gap: 1rem;
 }
 
 .eventContainer > div {
-    background-color: #c8c8c8;
-    height: 350px;
+    height: 370px;
     border-radius: 8px;
     display: grid;
-    grid-template-rows: 200px 150px;
+    grid-template-rows: 200px 120px 50px;
+}
+
+.removeButtonContainer {
+    display: flex;
+    background-color: white;
+    color: #388092;
+    font-weight: 500;
+    justify-content: center;
+    align-items: center;
 }
 
 .noEvents {
@@ -129,6 +137,7 @@
     border-bottom-left-radius: 8px;
     border-bottom-right-radius: 8px;
     padding: 8px;
+    width: 250px;
 }
 
 .eventTitle {
@@ -136,6 +145,9 @@
     font-weight: 500;
     margin: 1rem 0;
     color: #388092;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 .date {
@@ -148,4 +160,14 @@
 .eventLocation {
     color: darkgray;
     margin: 8px 0;
+}
+
+.imgContainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 200px;
+    width: 250px;
+    background-color: #dedede;
+    overflow: hidden;
 }

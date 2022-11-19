@@ -1,5 +1,6 @@
 .container {
     max-width: 1120px;
+    min-height: 330px;
     margin: 140px auto 120px auto;
     display: grid;
     grid-template-columns: repeat(2, 1fr);
