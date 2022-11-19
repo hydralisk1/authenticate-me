@@ -94,3 +94,13 @@ If organizers click on that modify button, they can edit group name, about and o
 [groupsettings3]: ./assets/groupsettings3.png
 [groupsettings4]: ./assets/groupsettings4.png
 [groupsettings5]: ./assets/groupsettings5.png
+
+## Event Settings Page
+
+Organizers can create and remove events here.
+
+![eventsettings1]
+![eventsettings2]
+
+[eventsettings1]: ./assets/eventsettings1.png
+[eventsettings2]: ./assets/eventsettings2.png
