@@ -13,7 +13,9 @@ const TopMenuLayout = () => {
         <header className={styles.header}>
             <div className={styles.container}>
                 <div className={styles.leftSide}>
-                    <Logo />
+                    <Link to='/home'>
+                        <Logo />
+                    </Link>
                     {/* <SearchBar /> */}
                 </div>
                 <div className={styles.rightSide}>
