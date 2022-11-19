@@ -39,8 +39,8 @@ const LoginFormPage = ({ currState }) => {
         setPasswordErrorMessage(passwordError)
     }, [email, password, currLanguage])
 
-    const demouserLogin = () => {
-        const credential = {credential: "demo@user.io", password: "password"}
+    const demouserLogin = (userNo) => {
+        const credential = userNo === 1 ? {credential: "demo@user.io", password: "password"} : {credential: "user1@user.io", password: "password2"}
         logIn(credential)
     }
 
@@ -48,14 +48,6 @@ const LoginFormPage = ({ currState }) => {
         dispatch(signInUser(credential))
             .then(res => {
                 if(res.ok){
-                    const user = {
-                        id: res.id,
-                        username: res.username,
-                        firstName: res.firstName,
-                        lastName: res.lastName,
-                        email: res.email
-                    }
-
                     setEmail('')
                     setPassword('')
                     setEmailClicked(false)
@@ -137,8 +129,12 @@ const LoginFormPage = ({ currState }) => {
                     </div>
                 </form>
                 <div className={styles.stretch}>
-                        <button className={styles.submitButton} onClick={demouserLogin}>{scripts[currLanguage].DemouserLogIn}</button>
+                        <button className={styles.submitButton} onClick={() => demouserLogin(1)}>{scripts[currLanguage].FirstDemouserLogIn}</button>
                 </div>
+                <div className={styles.stretch}>
+                        <button className={styles.submitButton} onClick={() => demouserLogin(2)}>{scripts[currLanguage].SecondDemouserLogIn}</button>
+                </div>
+
                 {/* <div>
                     {scripts[currLanguage].IssuesWithLogIn}
                 </div> */}
