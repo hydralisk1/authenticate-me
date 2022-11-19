@@ -11,7 +11,6 @@ const LogOut = () => {
         dispatch(signOutUser())
             .then(() => {
                 history.push('/')
-                window.location.reload();
             })
     }, [dispatch, history])
 

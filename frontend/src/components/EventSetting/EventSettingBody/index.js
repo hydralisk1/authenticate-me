@@ -71,23 +71,26 @@ const EventSettingBody = () => {
                 body: JSON.stringify(body)
             })
             .then(res => {
-                if(res.status < 400) {
-                    // setIsVenueLoaded(false)
-                    // setIsEventLoaded(false)
-                    setName('')
-                    setType(false)
-                    setPrice(0)
-                    setDesc('')
-                    setStartDate('')
-                    setEndDate('')
-                    setVenueId()
-                    setEventInput(false)
-                    window.alert('Successfully added')
-                    window.location.reload(false)
-                }
+                if(res.status < 400) {return res.json()}
+            })
+            .then(res => {
+                // setIsVenueLoaded(false)
+                // setIsEventLoaded(false)
+                setName('')
+                setType(false)
+                setPrice(0)
+                setDesc('')
+                setStartDate('')
+                setEndDate('')
+                setVenueId()
+                setEventInput(false)
+                res.Venue = venues.filter(v => v.id === res.venueId)
+                setEvents([...events, res])
+                window.alert('Successfully added')
             })
             .catch((e) => {
                 window.alert('Something went wrong')
+                history.push('/home')
             })
         }
     }

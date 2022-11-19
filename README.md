@@ -2,9 +2,6 @@
 
 ### Live Link: [Mannam - Meet up clone](https://meetup-clone-joonil.herokuapp.com)
 
-![meetup-dbdiagram]
-
-[meetup-dbdiagram]: ./assets/meetup_dbdiagram.png
 
 ## API Documentation
 

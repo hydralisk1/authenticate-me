@@ -18,8 +18,8 @@ const EventDetailBody = () => {
     const [isEventLoaded, setIsEventLoaded] = useState(false)
     const [areAttendeesLoaded, setAreAttendeesLoaded] = useState(false)
     const [permission, setPermission] = useState(0) // 2: organizer, 1: memeber, 0: not a member
-    const [event, setEvent] = useState({})
-    const [attendees, setAttendees] = useState({})
+    const [event, setEvent] = useState([])
+    const [attendees, setAttendees] = useState([])
     const [isJoiningGroup, setIsJoiningGroup] = useState(false)
     const [remainingSpot, setRemainingSpot] = useState(0)
     const [isAttendee, setIsAttendee] = useState(false)
@@ -66,7 +66,17 @@ const EventDetailBody = () => {
                 .then(res => {
                     if(res.status < 400) {
                         window.alert('Successfully requested')
-                        window.location.reload(false)
+                        const newAttendee = {
+                            id: user.id,
+                            firstName: user.firstName,
+                            lastName: user.lastName,
+                            Attendance: {
+                                status: 'pending'
+                            }
+                        }
+                        setAttendees([...attendees, newAttendee])
+                        setIsAttendee(true)
+                        setIsJoiningGroup(false)
                     }
                 })
                 .catch(() => window.alert('Something went wrong'))
@@ -267,6 +277,10 @@ const EventDetailBody = () => {
                 setAreAttendeesLoaded(true)
             })
     }, [eventId])
+
+    useEffect(() => {
+        setRemainingSpot(remainingSpot - 1)
+    }, [attendees])
 
     return isEventLoaded ?
         detailPage()
