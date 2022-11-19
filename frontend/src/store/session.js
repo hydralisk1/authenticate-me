@@ -1,5 +1,5 @@
 import { csrfFetch } from "./csrf"
-import Cookies from "js-cookie"
+// import Cookies from "js-cookie"
 
 // action types
 const SIGN_IN = 'session/SIGN_IN'
@@ -190,7 +190,7 @@ const initialState = {
 const sessionReducer = (state = initialState, action) => {
     switch(action.type){
         case GET_MY_GROUPS:
-            Cookies.set('groups', JSON.stringify(action.groups))
+            // Cookies.set('groups', JSON.stringify(action.groups))
             return {...state, groups: action.groups}
 
         case ADD_GROUP:
@@ -199,7 +199,7 @@ const sessionReducer = (state = initialState, action) => {
             if(action.joined) groups.joined.push(action.groupId)
             else groups.organized.push(action.groupId)
 
-            Cookies.set('groups', JSON.stringify(groups))
+            // Cookies.set('groups', JSON.stringify(groups))
             return {...state, groups}
 
         case REMOVE_GROUP:
@@ -209,7 +209,7 @@ const sessionReducer = (state = initialState, action) => {
             if(action.joined) newGroups.joined = newGroups.joined.filter(id => id !== groupId)
             else newGroups.organized = newGroups.organized.filter(id => id !== groupId)
 
-            Cookies.set('groups', JSON.stringify(newGroups))
+            // Cookies.set('groups', JSON.stringify(newGroups))
             return {...state, groups: newGroups}
 
         case SIGN_IN:
@@ -224,7 +224,7 @@ const sessionReducer = (state = initialState, action) => {
             return {...state, user, isLoggedIn: true }
 
         case SIGN_OUT:
-            Cookies.remove('groups')
+            // Cookies.remove('groups')
             return {...initialState}
 
         default:

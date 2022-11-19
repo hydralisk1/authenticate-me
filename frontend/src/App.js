@@ -36,9 +36,7 @@ function App() {
 
   useEffect(() => {
     if(isLoggedIn){
-      const groups = Cookies.get('groups')
-      if(groups === undefined) dispatch(getMyGroups(user.id))
-      else dispatch(getGroups(JSON.parse(groups)))
+      dispatch(getMyGroups(user.id))
     }
   }, [isLoggedIn, user, dispatch])
 

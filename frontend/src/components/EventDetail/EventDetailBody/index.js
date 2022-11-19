@@ -55,7 +55,6 @@ const EventDetailBody = () => {
                 })
                 .catch((e) => {
                     window.alert('Something went wrong')
-                    console.log(e)
                 })
         }
     }
@@ -74,6 +73,7 @@ const EventDetailBody = () => {
                                 status: 'pending'
                             }
                         }
+                        setEvent({...event, numAttending: event.numAttending + 1})
                         setAttendees([...attendees, newAttendee])
                         setIsAttendee(true)
                         setIsJoiningGroup(false)
@@ -91,7 +91,7 @@ const EventDetailBody = () => {
                 if(res) attendThisEvent()
                 else window.alert('Something went wrong')
             })
-            .catch((e) => console.log(e))
+            .catch()
     }
 
     useEffect(() => {
@@ -225,12 +225,13 @@ const EventDetailBody = () => {
                             </div>
                             <div style={{display: 'flex', alignItems: 'center', width: '200px'}}>
                                 {
-                                    permission < 2 && remainingSpot > 0 &&
+                                    permission < 2 &&
+                                    // permission < 2 && remainingSpot > 0 &&
                                     //     <button className={styles.attendButton}>
                                     //         {scripts[currLanguage].Settings}
                                     //     </button>
                                     // :
-                                        <button className={styles.attendButton} onClick={attendThisEvent} disabled={isAttendee}>
+                                        <button className={styles.attendButton} onClick={attendThisEvent} disabled={isAttendee || remainingSpot < 1}>
                                             {scripts[currLanguage].Attend}
                                         </button>
                                 }
@@ -279,7 +280,7 @@ const EventDetailBody = () => {
     }, [eventId])
 
     useEffect(() => {
-        setRemainingSpot(remainingSpot - 1)
+        setRemainingSpot(event.capacity - event.numAttending)
     }, [attendees])
 
     return isEventLoaded ?
