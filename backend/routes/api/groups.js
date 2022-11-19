@@ -646,7 +646,7 @@ router.get('/', async (_req, res) => {
             as: 'Members'
         },{
             model: GroupImage,
-            where: { preview: 'true'},
+            where: { preview: true},
             required: false
         }]
     })
