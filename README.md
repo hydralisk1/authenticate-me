@@ -104,3 +104,22 @@ Organizers can create and remove events here.
 
 [eventsettings1]: ./assets/eventsettings1.png
 [eventsettings2]: ./assets/eventsettings2.png
+
+## Start a new group Page
+
+Users can create groups here. Group's location will be based on organizer's current location. If organizer doesn't allow using location, it will set to New York as the group's location for now. City and state name are from Google Geocoding API.
+
+![creategroup1]
+![creategroup2]
+
+[creategroup1]: ./assets/creategroup1.png
+[creategroup2]: ./assets/creategroup2.png
+[creategroup3]: ./assets/creategroup3.png
+[creategroup4]: ./assets/creategroup4.png
+[creategroup5]: ./assets/creategroup5.png
+
+Creating a group has a four steps to complete. Users can see which step they're on with progress bar.
+
+![creategroup3]
+![creategroup4]
+![creategroup5]
