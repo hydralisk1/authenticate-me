@@ -136,7 +136,7 @@ const EventDetailBody = () => {
                         <div className={styles.left}>
                             { !!eventImages.length && (<>
                                     <div className={styles.eventImageContainer}>
-                                        <img className={styles.eventImage} src={showingEventImage} alt='event' />
+                                        <img className={styles.eventImage} src={showingEventImage || eventImages[0].url} alt='event' />
                                     </div>
 
                                     <div className={styles.eventImagesContainer}>
