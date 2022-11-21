@@ -10,6 +10,7 @@ const CreateGroupBody = () => {
     const history = useHistory()
     const dispatch = useDispatch()
     const currLanguage = useSelector(state => state.language)
+    const user = useSelector(state => state.session.user)
     const maxNumGroupName = 60
     const [currentStep, setCurrentStep] = useState(1)
     const [latLng, setLatLng] = useState({})
@@ -25,29 +26,79 @@ const CreateGroupBody = () => {
     const [groupNameClicked, setGroupNameClicked] = useState(false)
     const [isPrivate, setIsPrivate] = useState(false)
     const [isOnline, setIsOnline] = useState(false)
+    // const [isLoaded, setIsLoaded] = useState(false)
     const maxStep = 4
+    const savename = user.id + 'saved'
 
     useEffect(() => {
-        navigator.geolocation.getCurrentPosition((position) => {
-            setLatLng({
-                lat: position.coords.latitude,
-                lng: position.coords.longitude
-            })
-            setLatLngDone(true)
-        }, () => {
-            // when it fails, new york city's lat and lng would be set
-            setLatLng({
-                lat: 40.730610,
-                lng: -73.935242
-            })
-            setLatLngDone(true)
-        }, {timeout: 27000});
+        const saved = localStorage.getItem(savename)
 
-        // const watchID = navigator.geolocation.watchPosition(success, error, options);
+        if(saved){
+            const savedInfo = JSON.parse(saved)
+
+            setCurrentStep(savedInfo.currentStep)
+            setLatLng(savedInfo.latLng)
+            setLatLngDone(savedInfo.latLngDone)
+            setLocation(savedInfo.location)
+            setLocationDone(savedInfo.locationDone)
+            setGroupName(savedInfo.groupName)
+            setGroupNameError(savedInfo.groupNameError)
+            setDesc(savedInfo.desc)
+            setDescError(savedInfo.descError)
+            setDescClicked(savedInfo.descClicked)
+            setNumChar(savedInfo.numChar)
+            setGroupNameClicked(savedInfo.groupNameClicked)
+            setIsPrivate(savedInfo.isPrivate)
+            setIsOnline(savedInfo.isOnline)
+        }else {
+            saveIntoLocalStorage()
+            stepOne()
+        }
+
     }, [])
 
+    const saveIntoLocalStorage = () => {
+        const local = {
+            currentStep,
+            latLng,
+            latLngDone,
+            location,
+            locationDone,
+            groupName,
+            groupNameError,
+            desc,
+            descError,
+            descClicked,
+            numChar,
+            groupNameClicked,
+            isPrivate,
+            isOnline,
+        }
+
+        localStorage.setItem(savename, JSON.stringify(local))
+    }
+
+    const stepOne = () => {
+        if(latLng.lat === undefined){
+            navigator.geolocation.getCurrentPosition((position) => {
+                setLatLng({
+                    lat: position.coords.latitude,
+                    lng: position.coords.longitude
+                })
+                setLatLngDone(true)
+            }, () => {
+                // when it fails, new york city's lat and lng would be set
+                setLatLng({
+                    lat: 40.730610,
+                    lng: -73.935242
+                })
+                setLatLngDone(true)
+            }, {timeout: 27000, enableHighAccuracy: true});
+        }
+    }
+
     useEffect(() => {
-        if(latLngDone){
+        if(latLngDone && !locationDone){
             const url = `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latLng.lat},${latLng.lng}&key=${process.env.REACT_APP_MAPS_API}`
             fetch(url)
                 .then(res => res.json())
@@ -61,9 +112,10 @@ const CreateGroupBody = () => {
                         country
                     })
                     setLocationDone(true)
+                    saveIntoLocalStorage()
                 })
         }
-    }, [latLngDone])
+    }, [latLngDone, latLng.lat, latLng.lng, locationDone])
 
     useEffect(() => {
         if(!groupName.length) setGroupNameError(scripts[currLanguage].Required)
@@ -119,13 +171,14 @@ const CreateGroupBody = () => {
             .then(gId => {
                 if(gId > -1) {
                     window.alert('Success')
+                    localStorage.removeItem(savename)
                     history.push(`/groups/${gId}`)
                 }else window.alert('Failed')
             })
-
     }
 
     const body = () => {
+        saveIntoLocalStorage()
         switch(currentStep){
             case 1:
                 return (
