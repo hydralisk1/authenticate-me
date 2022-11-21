@@ -223,6 +223,7 @@ const EventDetailBody = () => {
                                 <div className={styles.price}>{!!event.price ? `$ ${parseFloat(event.price).toFixed(2)}` : 'Free'}</div>
                                 <div className={styles.spots}>{remainingSpot} spot{remainingSpot > 1 && 's'} left</div>
                             </div>
+                            {console.log(permission, isEventLoaded, areAttendeesLoaded)}
                             <div style={{display: 'flex', alignItems: 'center', width: '200px'}}>
                                 {
                                     isEventLoaded && areAttendeesLoaded && permission < 2 &&
@@ -261,8 +262,8 @@ const EventDetailBody = () => {
         csrfFetch(`/api/events/${eventId}`)
             .then(res => res.json())
             .then(res => {
-                if(groups.organized.includes(res.groupId)) setPermission(2)
-                else if(groups.joined.includes(res.groupId)) setPermission(1)
+                // if(groups.organized.includes(res.groupId)) setPermission(2)
+                // else if(groups.joined.includes(res.groupId)) setPermission(1)
                 setRemainingSpot(res.capacity - res.numAttending)
                 setEvent(res)
                 setEventImages(res.EventImages)
@@ -278,6 +279,11 @@ const EventDetailBody = () => {
                 setAreAttendeesLoaded(true)
             })
     }, [eventId])
+
+    useEffect(() => {
+        if(groups.organized.includes(event.groupId)) setPermission(2)
+        else if(groups.joined.includes(event.groupId)) setPermission(1)
+    }, [event])
 
     useEffect(() => {
         setRemainingSpot(event.capacity - event.numAttending)
