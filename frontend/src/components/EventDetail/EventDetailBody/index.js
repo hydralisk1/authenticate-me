@@ -220,7 +220,7 @@ const EventDetailBody = () => {
                         </div>
                         <div className={styles.buttons}>
                             <div>
-                                <div className={styles.price}>{!!event.price ? `$ ${parseFloat(event.price).toFixed(2)}` : 'Free'}</div>
+                                <div className={styles.price}>{event.price > 0 ? `$ ${parseFloat(event.price).toFixed(2)}` : 'Free'}</div>
                                 <div className={styles.spots}>{remainingSpot} spot{remainingSpot > 1 && 's'} left</div>
                             </div>
 
