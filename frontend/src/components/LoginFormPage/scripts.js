@@ -29,7 +29,7 @@ const scripts = {
         IssuesWithLogIn: '로그인에 문제가 있습니까?',
         AuthError: '로그인에 문제가 있습니다. 확인 후 다시 시도해 주세요',
         FirstDemouserLogIn: '데모 사용자1 로그인',
-        SecondeDemouserLogIn: '데모 사용자2 로그인',
+        SecondDemouserLogIn: '데모 사용자2 로그인',
     },
 }
 
