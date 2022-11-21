@@ -38,6 +38,7 @@
 
 .desc {
     margin-bottom: 3rem;
+    white-space: pre-wrap;
 }
 
 .attendees {
