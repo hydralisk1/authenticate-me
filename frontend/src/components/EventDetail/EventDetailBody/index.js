@@ -165,7 +165,7 @@ const EventDetailBody = () => {
                                 )
                             }
                             <h2>{scripts[currLanguage].Details}</h2>
-                            <p className={styles.desc}>{event.description}</p>
+                            <p style={{whiteSpace: 'pre-wrap'}} className={styles.desc}>{event.description}</p>
                             <h2>{`${scripts[currLanguage].Attendees} (${event.numAttending})`}</h2>
                             { areAttendeesLoaded &&
                                 <div className={styles.attendees}>

@@ -134,7 +134,7 @@ const GroupDetail = () => {
                 <div className={styles.groupDetailContainer}>
                     <div className={styles.groupDetail}>
                         <h2>{scripts[currLanguage].WhatWe}</h2>
-                        <p>{group.about}</p>
+                        <p style={{whiteSpace: 'pre-wrap'}}>{group.about}</p>
                     </div>
                 </div>
             </>
