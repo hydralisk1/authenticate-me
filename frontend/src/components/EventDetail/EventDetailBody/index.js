@@ -223,7 +223,7 @@ const EventDetailBody = () => {
                                 <div className={styles.price}>{!!event.price ? `$ ${parseFloat(event.price).toFixed(2)}` : 'Free'}</div>
                                 <div className={styles.spots}>{remainingSpot} spot{remainingSpot > 1 && 's'} left</div>
                             </div>
-                            {console.log(permission, isEventLoaded, areAttendeesLoaded)}
+
                             <div style={{display: 'flex', alignItems: 'center', width: '200px'}}>
                                 {
                                     isEventLoaded && areAttendeesLoaded && permission < 2 &&
