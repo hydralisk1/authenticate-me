@@ -11,11 +11,16 @@ import { dateFormatConverter } from '../../../../util/timeConverter'
 
 const ShowingEvents = () => {
     const [shownMonth, setShownMonth] = useState(new Date())
+    const myGroups = useSelector(state => state.session.groups)
+    const user = useSelector(state => state.session.user)
     const currLanguage = useSelector(state => state.language)
     const [isLoaded, setIsLoaded] = useState(false)
     const [isGroupLoaded, setIsGroupLoaded] = useState(false)
     const [events, setEvents] = useState([])
     const [groups, setGroups] = useState([])
+    const [numMyEvents, setNumMyEvents] = useState(2)
+    const [numMyOrganized, setNumMyOrganized] = useState(2)
+    const [numMyJoined, setNumMyJoined] = useState(2)
     const [isCurrentTabEvents, setIsCurrentTabEvents] = useState(true)
 
     const changeMonth = (previous = false) => {
@@ -195,7 +200,77 @@ const ShowingEvents = () => {
                     <div className={styles.calendar}>
                         {calendar(shownMonth)}
                     </div>
-                    <div className={styles.yourInterests}></div>
+                    <div className={styles.yourInterests}>
+                        <h3>Events from my groups</h3>
+                        <div className={styles.myGroupContainer}>
+                            {isLoaded ?
+                                !!events.length ? <>
+                                    {events.filter(event => myGroups.organized.includes(event.groupId) || myGroups.joined.includes(event.groupId))
+                                        .slice(0, 2)
+                                        .map(myEvent =>
+                                            <Link key={myEvent.startDate + myEvent.startDate + myEvent.endDate} to={`/events/${myEvent.id}`}>
+                                                <div key={myEvent.id} className={styles.myContainer}>
+                                                    <div key={myEvent.name} className={styles.myContainerImg}>
+                                                        { myEvent.previewImage ?
+                                                            <img className={styles.myPreviewImages} key={myEvent.startDate} src={myEvent.previewImage} alt='myEvent' /> :
+                                                            <Cats key={myEvent.startDate}/> }
+                                                    </div>
+                                                    <div key={myEvent.endDate}>
+                                                        <p key={myEvent.id + myEvent.startDate} className={styles.date}>{dateFormatConverter(myEvent.startDate, currLanguage)}</p>
+                                                        <p key={myEvent.id + myEvent.Group.name} className={styles.eventName}>{myEvent.name}</p>
+                                                        <p key={myEvent.id + myEvent.name} className={styles.groupName}>
+                                                            {
+                                                                myEvent.type === 'In person' ?
+                                                                    `${myEvent.Venue.city}, ${myEvent.Venue.state}` :
+                                                                    myEvent.type
+                                                            }
+                                                        </p>
+                                                        <p key={myEvent.id + myEvent.startDate + myEvent.endDate} className={styles.groupName}>{myEvent.Group.name}</p>
+                                                    </div>
+                                                </div>
+                                            </Link>
+                                        )}
+                                    <div className={styles.showMore}>Show more</div>
+                                    </>
+                                    : <div>No events</div>
+                                : 'Loading...'
+                            }
+                        </div>
+                    </div>
+                    <div className={styles.yourInterests}>
+                        <h3>Groups organized by {user.firstName}</h3>
+                        <div className={styles.myGroupContainer}>
+                            {isGroupLoaded ?
+                                !!groups.length ?
+                                    groups.filter(event => myGroups.organized.includes(event.groupId) || myGroups.joined.includes(event.groupId))
+                                        .slice(0, 2)
+                                        .map(myEvent =>
+                                            <Link key={myEvent.startDate + myEvent.startDate + myEvent.endDate} to={`/events/${myEvent.id}`}>
+                                                <div key={myEvent.id} className={styles.myContainer}>
+                                                    <div key={myEvent.name} className={styles.myContainerImg}>
+                                                        { myEvent.previewImage ?
+                                                            <img className={styles.myPreviewImages} key={myEvent.startDate} src={myEvent.previewImage} alt='myEvent' /> :
+                                                            <Cats key={myEvent.startDate}/> }
+                                                    </div>
+                                                    <div key={myEvent.endDate}>
+                                                        <p key={myEvent.id + myEvent.startDate} className={styles.date}>{dateFormatConverter(myEvent.startDate, currLanguage)}</p>
+                                                        <p key={myEvent.id + myEvent.Group.name} className={styles.eventName}>{myEvent.name}</p>
+                                                        <p key={myEvent.id + myEvent.name} className={styles.groupName}>
+                                                            {
+                                                                myEvent.type === 'In person' ?
+                                                                    `${myEvent.Venue.city}, ${myEvent.Venue.state}` :
+                                                                    myEvent.type
+                                                            }
+                                                        </p>
+                                                        <p key={myEvent.id + myEvent.startDate + myEvent.endDate} className={styles.groupName}>{myEvent.Group.name}</p>
+                                                    </div>
+                                                </div>
+                                            </Link>
+                                        ) : <div>No events</div>
+                                : 'Loading...'
+                            }
+                        </div>
+                    </div>
                 </div>
                 <div className={styles.right}>
                     <div className={styles.tabs}>

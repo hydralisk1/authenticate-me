@@ -31,6 +31,52 @@
 
 .yourInterests {
     width: 100%;
+    margin-top: 1rem;
+    border: 1px solid rgb(200, 200, 200);
+    border-radius: 8px;
+    padding: 1rem;
+}
+
+.myGroupContainer {
+    display: flex;
+    width: 100%;
+    align-items: center;
+    flex-direction: column;
+}
+
+.myContainer {
+    display: grid;
+    grid-template-columns: 100px 232px;
+    column-gap: 4px;
+    margin-bottom: 4px;
+    cursor: pointer;
+    transition: background-color 0.5s ease;
+    padding: 1rem 0;
+}
+
+.myContainer:hover {
+    background-color: #bae4f0;
+}
+
+.myContainerImg {
+    display: felx;
+    width: 100%;
+    height: 100px;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.myContainer > div:last-child {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+}
+
+.myContainerImg > img {
+    height: 100%;
+    object-fit: cover;
 }
 
 .yourEventsContainer {
@@ -143,6 +189,18 @@ table {
     margin-bottom: 4px;
 }
 
+.showMore {
+    color: #388092;
+    cursor: pointer;
+    font-weight: 500;
+}
+
+.showMore:hover {
+    color:#47a5bc;
+}
+
+
+
 .eventDesc {
     display: inline-block;
 }
@@ -173,9 +231,9 @@ table {
 }
 
 .tab {
-    border-top: 1px solid darkgray;
-    border-left: 1px solid darkgray;
-    border-right: 1px solid darkgray;
+    border-top: 1px solid rgb(200, 200, 200);
+    border-left: 1px solid rgb(200, 200, 200);
+    border-right: 1px solid rgb(200, 200, 200);
     padding: 1rem;
     cursor: pointer;
     text-align: center;
@@ -187,15 +245,15 @@ table {
 }
 
 .notChosen {
-    border-bottom: 1px solid darkgray;
-    background-color: darkgray;
+    border-bottom: 1px solid rgb(200, 200, 200);
+    background-color: rgb(200, 200, 200);
     color: white;
 }
 
 .contentContainer {
-    border-left: 1px solid darkgray;
-    border-right: 1px solid darkgray;
-    border-bottom: 1px solid darkgray;
+    border-left: 1px solid rgb(200, 200, 200);
+    border-right: 1px solid rgb(200, 200, 200);
+    border-bottom: 1px solid rgb(200, 200, 200);
     padding: 1rem;
     margin-bottom: 2rem;
     border-bottom-left-radius: 8px;
@@ -203,5 +261,5 @@ table {
 }
 
 .notTab {
-    border-bottom: 1px solid darkgray;
+    border-bottom: 1px solid rgb(200, 200, 200);
 }
