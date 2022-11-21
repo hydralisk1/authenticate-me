@@ -225,7 +225,7 @@ const EventDetailBody = () => {
                             </div>
                             <div style={{display: 'flex', alignItems: 'center', width: '200px'}}>
                                 {
-                                    permission < 2 &&
+                                    isEventLoaded && permission < 2 &&
                                     // permission < 2 && remainingSpot > 0 &&
                                     //     <button className={styles.attendButton}>
                                     //         {scripts[currLanguage].Settings}
