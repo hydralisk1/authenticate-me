@@ -2,6 +2,11 @@
 
 const { User } = require('../models')
 
+let options = {};
+if (process.env.NODE_ENV === 'production') {
+  options.schema = process.env.SCHEMA;  // define your schema in options object
+}
+
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up (queryInterface, Sequelize) {
@@ -14,6 +19,8 @@ module.exports = {
      *   isBetaMember: false
      * }], {});
     */
+    options.tableName = 'Groups'
+
     const data = [
     {
       name: 'Hi guys',
@@ -43,7 +50,7 @@ module.exports = {
     const userIds = await User.findAll({ attributes: ['id'] })
     userIds.forEach((userId, i) => data[i].organizerId = userId.id)
 
-    return queryInterface.bulkInsert('Groups', data, {});
+    return queryInterface.bulkInsert(options, data, {});
   },
 
   async down (queryInterface, Sequelize) {
@@ -54,7 +61,9 @@ module.exports = {
      * await queryInterface.bulkDelete('People', null, {});
      */
      const Op = Sequelize.Op
-     return queryInterface.bulkDelete('Groups', {
+     options.tableName = 'Groups'
+
+     return queryInterface.bulkDelete(options, {
        name: {[Op.in]: ['Hi guys', 'Tennis Club', 'WoW Club']}
      }, {})
   }

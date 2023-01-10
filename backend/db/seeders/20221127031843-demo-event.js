@@ -1,6 +1,11 @@
 'use strict';
 const { Group, Venue } = require('../models')
 
+let options = {};
+if (process.env.NODE_ENV === 'production') {
+  options.schema = process.env.SCHEMA;  // define your schema in options object
+}
+
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up (queryInterface, Sequelize) {
@@ -16,7 +21,9 @@ module.exports = {
    const venueIds = await Venue.findAll({ attributes: ['id'] })
    const groupIds = await Group.findAll({ attributes: ['id'] })
 
-   return queryInterface.bulkInsert('Events', [{
+   options.tableName = 'Events'
+
+   return queryInterface.bulkInsert(options, [{
     venueId: venueIds[0].id,
     groupId: groupIds[0].id,
     name: "Demo Event",
@@ -60,7 +67,9 @@ module.exports = {
      const groupIds = await Group.findAll({ attributes: ['id'] })
      const Op = Sequelize.Op
 
-     return queryInterface.bulkDelete('Events', {
+     options.tableName = 'Events'
+
+     return queryInterface.bulkDelete(options, {
       [Op.or]: [
         { groupId: { [Op.in]: [groupIds[0].id, groupIds[1].id, groupIds[2].id] }},
         { venueId: { [Op.in]: [venueIds[0].id, venueIds[1].id, venueIds[2].id] }}

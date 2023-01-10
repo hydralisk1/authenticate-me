@@ -1,6 +1,11 @@
 'use strict';
 const { Event, User } = require('../models')
 
+let options = {};
+if (process.env.NODE_ENV === 'production') {
+  options.schema = process.env.SCHEMA;  // define your schema in options object
+}
+
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up (queryInterface, Sequelize) {
@@ -13,10 +18,11 @@ module.exports = {
      *   isBetaMember: false
      * }], {});
     */
+   options.tableName = 'Attendances'
    const eventIds = await Event.findAll({ attributes: ['id'] })
    const userIds = await User.findAll({ attributes: ['id'] })
 
-   return queryInterface.bulkInsert('Attendances', [{
+   return queryInterface.bulkInsert(options, [{
     eventId: eventIds[0].id,
     userId: userIds[0].id,
     status: 'waitlist',
@@ -44,7 +50,8 @@ module.exports = {
      */
     const eventIds = await Event.findAll({ attributes: ['id'] })
     const Op = Sequelize.Op
-    return queryInterface.bulkDelete('Attendances', {
+    options.tableName = 'Attendances'
+    return queryInterface.bulkDelete(options, {
       eventId: {
         [Op.in]: [eventIds[0].id, eventIds[1].id, eventIds[2].id]
       }

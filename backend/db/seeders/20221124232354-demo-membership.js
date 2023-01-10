@@ -1,6 +1,11 @@
 'use strict';
 const { User, Group } = require('../models')
 
+let options = {};
+if (process.env.NODE_ENV === 'production') {
+  options.schema = process.env.SCHEMA;  // define your schema in options object
+}
+
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up (queryInterface, Sequelize) {
@@ -16,7 +21,10 @@ module.exports = {
     const userIds = await User.findAll({ attributes: ['id'] })
     const groupIds = await Group.findAll({ attributes: ['id'] })
 
-    return queryInterface.bulkInsert('Memberships', [
+    options.tableName = 'Memberships'
+
+
+    return queryInterface.bulkInsert(options, [
     {
       userId: userIds[1].id,
       groupId: groupIds[0].id,
@@ -44,7 +52,9 @@ module.exports = {
      const Op = Sequelize.Op
      const userIds = await User.findAll({ attributes: ['id'] })
 
-     return queryInterface.bulkDelete('Memberships', {
+     options.tableName = 'Memberships'
+
+     return queryInterface.bulkDelete(options, {
       userId: {[Op.in]: userIds.map(userId => userId.id)}
      }, {})
   }

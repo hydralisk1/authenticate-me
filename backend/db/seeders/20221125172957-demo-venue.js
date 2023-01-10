@@ -2,6 +2,11 @@
 
 const { Group } = require('../models')
 
+let options = {};
+if (process.env.NODE_ENV === 'production') {
+  options.schema = process.env.SCHEMA;  // define your schema in options object
+}
+
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up (queryInterface, Sequelize) {
@@ -45,7 +50,9 @@ module.exports = {
     lng: -110.92233
    }]
 
-   return queryInterface.bulkInsert('Venues', data, {})
+   options.tableName = 'Venues'
+
+   return queryInterface.bulkInsert(options, data, {})
   },
 
   async down (queryInterface, Sequelize) {
@@ -57,7 +64,10 @@ module.exports = {
      */
     const Op = Sequelize.Op
     const groupIds = await Group.findAll({ attributes: ['id'] })
-    return queryInterface.bulkDelete('Venues', {
+
+    options.tableName = 'Venues'
+
+    return queryInterface.bulkDelete(options, {
       groupId: {[Op.in]: [groupIds[0].id, groupIds[1].id, groupIds[2].id]}
     }, {})
   }
