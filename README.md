@@ -1,6 +1,6 @@
 # Mannam - Meet up Clone
 
-Mannam is a Meetup cloning site. Mannam can be used for creating groups, creating events and attending other's events. As a side note, Mannam literally means MeetUp in Korean. [Click here to view Mannam Live Site.](https://meetup-clone-joonil.herokuapp.com)
+Mannam is a Meetup cloning site. Mannam can be used for creating groups, creating events and attending other's events. As a side note, Mannam literally means MeetUp in Korean. [Click here to view Mannam Live Site.](https://mannam.onrender.com)
 
 ### Please see below links to project Wiki
 [API Documentation](https://github.com/hydralisk1/authenticate-me/wiki/API-Documentation)
